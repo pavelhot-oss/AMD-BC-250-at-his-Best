@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# config/bc250-beast.conf
+#
+# Copiez ce fichier en "bc250-beast.conf" (fait automatiquement au premier
+# lancement) et ajustez les valeurs à VOTRE carte, VOTRE refroidissement et
+# VOTRE alimentation. Chaque puce est différente : ces valeurs par défaut
+# sont les "sweet spots" génériques rapportés par Old Lamer, pas une garantie.
+#
+# ⚠️  Ne dépassez JAMAIS 1300 mV de Vid CPU (risque réel de destruction du CPU).
+# ⚠️  Validez toujours par un stress test complet avant de considérer un
+#     réglage comme stable (voir modules/05-cpu-overclock).
+
+# ============================================================
+# 1) CPU — overclock / undervolt (bc250_smu_oc)
+# ============================================================
+# Fréquence cible en MHz. Sweet spot générique reporté : 3850 MHz.
+CPU_FREQ_MHZ=3850
+
+# Voltage cible en mV. Sweet spot générique reporté : 1150-1160 mV.
+# Undervolt stock (3500 MHz) possible autour de 1000 mV.
+CPU_VID_MV=1150
+
+# Limite de température CPU/GPU en °C (90°C recommandé, 100°C = stock)
+CPU_TEMP_LIMIT_C=90
+
+# Durée du stress test de validation (secondes). 300s = 5 min recommandé.
+CPU_STRESS_SECONDS=300
+
+# ============================================================
+# 2) GPU — déblocage des Compute Units (bc250-cu-live-manager)
+# ============================================================
+# "full"    -> déblocage complet 40 CU (recommandé si toutes les WGP sont saines)
+# "factory" -> reste sur les 24 CU d'origine
+# "custom"  -> utilise GPU_CU_DISABLE_LIST ci-dessous pour masquer des WGP défectueuses
+GPU_CU_MODE="full"
+
+# Liste des WGP à exclure au format SE.SH.WGP, séparées par des virgules.
+# Exemple si la carte a une paire défectueuse en SE1/SH0/WGP3 (donne 38 CU) :
+#   GPU_CU_DISABLE_LIST="1.0.3"
+GPU_CU_DISABLE_LIST=""
+
+# ============================================================
+# 3) GPU — overclock (gouverneur cyan-skillfish)
+# ============================================================
+# --- GPU OVERCLOCK (Governor Cyan-Skillfish) ---
+# Température cible avant throttling progressif (défaut: 85°C)
+GPU_TEMP_TARGET_C=85
+# Voltage GPU cible (optionnel, laisser vide pour utiliser le défaut du gouverneur)
+# GPU_VOLT_MV=
+
+# Fréquence GPU cible en MHz. Palier "facile" 2000 MHz, sweet spot watercooling
+# rapporté ~2400 MHz. Sans watercooling, restez prudent (2200-2400 MHz max).
+GPU_FREQ_MHZ=2000
+
+# Voltage GPU cible en mV (laisser vide "" pour utiliser la courbe par défaut
+# du gouverneur)
+GPU_VOLT_MV=""
+
+# ============================================================
+# 4) CPU — cœurs additionnels (6c/12t -> 8c/16t)
+# ============================================================
+# Active le déblocage des 2 cœurs CPU cachés à chaque boot (volatile,
+# ne survit pas à un cold boot -> réappliqué automatiquement par le
+# service systemd installé par le module 03).
+CPU_UNLOCK_8_CORES=1
+
+# Si votre carte affiche un masque de présence de cœurs différent de 0x77,
+# c'est probablement un vrai défaut silicium. Ne PAS forcer sans le savoir.
+CPU_UNLOCK_FORCE_NON_STANDARD_MASK=0
+
+# ============================================================
+# 5) Système — mémoire / stabilité (zswap)
+# ============================================================
+ENABLE_ZSWAP=1
+ZSWAP_MAX_POOL_PERCENT=25
+ZSWAP_COMPRESSOR="lz4"
+SWAPFILE_SIZE_GB=32
+SWAPPINESS=120
+
+# ============================================================
+# 6) Système — mitigations CPU (Spectre/Meltdown)
+# ============================================================
+# Les désactiver donne quelques % de FPS en plus mais réduit la sécurité
+# contre certaines classes d'attaques locales. Machine de jeu dédiée = OK
+# pour la plupart des gens, mais c'est un choix à faire consciemment.
+DISABLE_CPU_MITIGATIONS=1
+
+# ============================================================
+# 7) Monitoring
+# ============================================================
+INSTALL_MANGOHUD=1
+
+# ============================================================
+# 8) VRAM BIOS (rappel — NON automatisable en logiciel)
+# ============================================================
+# La bascule VRAM 8Go -> 512Mo se fait DANS le BIOS modifié après flash
+# (voir modules/02-bios-uefi). Ce champ est juste un pense-bête affiché
+# par le script, il ne modifie rien automatiquement.
+BIOS_TARGET_VRAM_MB=512
