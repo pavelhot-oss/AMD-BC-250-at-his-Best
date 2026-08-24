@@ -31,6 +31,7 @@ source réel des dépôts communautaires (vendorisés dans `vendor/`).
 | 06 | Overclock GPU | 🟡 (dépôt externe non vendorisé) | Gouverneur cyan-skillfish |
 | 07 | Réglages système | ✅ | zswap, mitigations off, MangoHud |
 | 08 | Extras | ✅ (optionnel) | NullVRS, liens boîtiers, communauté |
+| 09 | Validation & benchmark | ✅ | Rapport de santé post-install (cœurs CPU, CU GPU, services, températures, stabilité) |
 
 ## Démarrage rapide
 
@@ -48,6 +49,7 @@ Autres modes :
 ```bash
 sudo ./install.sh --status              # diagnostic rapide
 sudo ./install.sh --module 03           # un seul module
+sudo ./install.sh --module 09           # batterie de validation post-install
 sudo ./install.sh --all                 # tout dans l'ordre recommandé
 sudo ./install.sh --all --force         # ignore la détection du BC-250 (dev/CI)
 ```
@@ -65,7 +67,7 @@ sudo ./install.sh --all --force         # ignore la détection du BC-250 (dev/CI
 
 ## Ordre recommandé
 
-L'ordre des modules (00 → 08) **est** l'ordre recommandé par la communauté :
+L'ordre des modules (00 → 09) **est** l'ordre recommandé par la communauté :
 matériel d'abord (refroidissement, alim), puis BIOS, puis déblocages
 logiciels (cœurs CPU, CU GPU), puis overclocks (CPU, GPU), puis réglages
 système. Ne sautez pas le module 01 avant 05/06 : pousser l'overclock sans

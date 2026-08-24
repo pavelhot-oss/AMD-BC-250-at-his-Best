@@ -31,6 +31,7 @@ source code of the community repositories (vendored in `vendor/`).
 | 06 | GPU overclock | 🟡 (external repo, not vendored) | cyan-skillfish governor |
 | 07 | System tuning | ✅ | zswap, mitigations off, MangoHud |
 | 08 | Extras | ✅ (optional) | NullVRS, case links, community |
+| 09 | Validation & benchmark | ✅ | Post-install health report (CPU cores, GPU CUs, services, temps, stability) |
 
 ## Quick start
 
@@ -48,6 +49,7 @@ Other modes:
 ```bash
 sudo ./install.sh --status              # quick diagnostic
 sudo ./install.sh --module 03           # run a single module
+sudo ./install.sh --module 09           # post-install validation battery
 sudo ./install.sh --all                 # run everything in recommended order
 sudo ./install.sh --all --force         # skip BC-250 detection (dev/CI)
 ```
@@ -67,7 +69,7 @@ sudo ./install.sh --all --force         # skip BC-250 detection (dev/CI)
 
 ## Recommended order
 
-The module order (00 → 08) **is** the community-recommended order:
+The module order (00 → 09) **is** the community-recommended order:
 hardware first (cooling, power), then BIOS, then software unlocks (CPU
 cores, GPU CUs), then overclocks (CPU, GPU), then system tuning. Don't
 skip module 01 before 05/06: pushing an overclock without adequate
