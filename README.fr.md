@@ -1,3 +1,5 @@
+🇫🇷 Français | [🇬🇧 English](README.md)
+
 # bc250-beast
 
 Dossier unifié pour transformer un **AMD BC-250** (APU PS5 cutdown, mining

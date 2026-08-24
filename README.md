@@ -1,3 +1,5 @@
+🇬🇧 English | [🇫🇷 Français](README.fr.md)
+
 # bc250-beast
 
 A unified toolkit to turn an **AMD BC-250** (cut-down PS5 APU, recycled
