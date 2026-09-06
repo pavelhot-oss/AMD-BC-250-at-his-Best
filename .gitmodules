@@ -1,0 +1,15 @@
+[submodule "vendor/bc250-core-unlock"]
+	path = vendor/bc250-core-unlock
+	url = https://github.com/rw-r-r-0644/bc250-core-unlock.git
+[submodule "vendor/bc250-cu-live-manager"]
+	path = vendor/bc250-cu-live-manager
+	url = https://github.com/WinnieLV/bc250-cu-live-manager.git
+[submodule "vendor/bc250-40cu-unlock"]
+	path = vendor/bc250-40cu-unlock
+	url = https://github.com/duggasco/bc250-40cu-unlock.git
+[submodule "vendor/bc250_smu_oc"]
+	path = vendor/bc250_smu_oc
+	url = https://github.com/bc250-collective/bc250_smu_oc.git
+[submodule "vendor/bc250-uefi-menu"]
+	path = vendor/bc250-uefi-menu
+	url = https://github.com/Forbidden-Darkness/AMD-BC-250-UEFI-v2.2-Firmware-Menu-Script.git
