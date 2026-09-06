@@ -26,19 +26,34 @@ err()   { printf "${C_RED}[E]${C_NC} %s\n" "$*" >&2; echo "[$(_ts)] [E] $*" >> "
 die()   { err "$@"; exit 1; }
 title() { printf "\n${C_BOLD}${C_CYAN}== %s ==${C_NC}\n" "$*"; }
 
+# ------------------------------------------------------------------
+# Config utilisateur (chemin défini ici, chargé par load_config plus bas,
+# et utilisé par i18n pour persister le choix de langue)
+# ------------------------------------------------------------------
+CONFIG_FILE="${BC250_ROOT}/config/bc250-beast.conf"
+
+# ------------------------------------------------------------------
+# i18n : tous les messages passent par t <clé> (voir lib/i18n.sh et
+# locale/*.sh). Chargé ici, après les fonctions de log qu'il utilise.
+# ------------------------------------------------------------------
+# shellcheck disable=SC1091
+source "${BC250_ROOT}/lib/i18n.sh"
+i18n_init
+
 confirm() {
     # confirm "question" -> return 0 si oui
-    local prompt="${1:-Continuer ?}"
+    local prompt="${1:-$(t common_confirm_default)}"
     if [[ "${BC250_YES:-0}" == "1" ]]; then
         return 0
     fi
-    read -rp "$(printf "${C_YELLOW}%s [y/N]: ${C_NC}" "$prompt")" ans
-    [[ "$ans" =~ ^[Yy]$ ]]
+    local yes_re; yes_re="$(t common_yes_regex)"
+    read -rp "$(printf "${C_YELLOW}%s %s: ${C_NC}" "$prompt" "$(t common_yn)")" ans
+    [[ "$ans" =~ $yes_re ]]
 }
 
 require_root() {
     if [[ $EUID -ne 0 ]]; then
-        die "Ce module doit être lancé en root (sudo)."
+        die "$(t common_need_root)"
     fi
 }
 
@@ -51,13 +66,13 @@ is_bc250() {
 
 require_bc250() {
     if [[ "${BC250_FORCE:-0}" == "1" ]]; then
-        warn "Détection matérielle ignorée (--force)."
+        warn "$(t common_hw_check_skipped)"
         return 0
     fi
     if ! is_bc250; then
-        die "Aucun AMD BC-250 détecté (PCI 1002:13fe absent). Utilisez --force pour ignorer ce garde-fou."
+        die "$(t common_no_bc250)"
     fi
-    log "AMD BC-250 détecté (PCI 1002:13fe)."
+    log "$(t common_bc250_found)"
 }
 
 # ------------------------------------------------------------------
@@ -91,7 +106,7 @@ pkg_install() {
     case "$distro" in
         bazzite-ostree|fedora-ostree)
             rpm-ostree install --idempotent --apply-live "$@" || {
-                warn "install --apply-live a échoué, tentative d'install classique (reboot requis ensuite)"
+                warn "$(t common_apply_live_failed)"
                 rpm-ostree install --idempotent "$@"
                 REBOOT_NEEDED=1
             }
@@ -99,8 +114,8 @@ pkg_install() {
         fedora)      dnf install -y "$@" ;;
         arch)        pacman -S --needed --noconfirm "$@" ;;
         debian)      apt-get update -qq && apt-get install -y "$@" ;;
-        steamos)     die "SteamOS immutable non géré — Bazzite est la distro recommandée par le guide." ;;
-        *)           die "Distribution non reconnue, installez manuellement : $*" ;;
+        steamos)     die "$(t common_steamos_unsupported)" ;;
+        *)           die "$(t common_unknown_distro_pkg "$*")" ;;
     esac
 }
 
@@ -109,30 +124,37 @@ flag_reboot_needed() { REBOOT_NEEDED=1; }
 
 maybe_prompt_reboot() {
     if [[ "$REBOOT_NEEDED" == "1" ]]; then
-        warn "Un redémarrage est nécessaire pour appliquer les changements ci-dessus."
-        if confirm "Redémarrer maintenant ?"; then
+        warn "$(t common_reboot_needed)"
+        if confirm "$(t common_reboot_now_q)"; then
             systemctl reboot
         else
-            warn "N'oubliez pas de redémarrer avant de continuer avec les modules suivants."
+            warn "$(t common_reboot_reminder)"
         fi
     fi
 }
 
 # ------------------------------------------------------------------
-# Config utilisateur
+# Chargement de la config
 # ------------------------------------------------------------------
-CONFIG_FILE="${BC250_ROOT}/config/bc250-beast.conf"
+# Au premier lancement, copie l'exemple dans la langue active s'il existe
+# (bc250-beast.conf.example.fr), sinon l'exemple anglais par défaut.
+# Les variables sont exportées (set -a) : les modules tournent dans un
+# sous-shell (bash modules/XX/run.sh) et ne verraient rien sinon.
 load_config() {
     if [[ ! -f "$CONFIG_FILE" ]]; then
-        if [[ -f "${CONFIG_FILE}.example" ]]; then
-            cp "${CONFIG_FILE}.example" "$CONFIG_FILE"
-            warn "Aucune config trouvée, copie de l'exemple vers $CONFIG_FILE (à ajuster à votre carte)."
+        local example="${CONFIG_FILE}.example"
+        [[ -f "${example}.${I18N_LANG}" ]] && example="${example}.${I18N_LANG}"
+        if [[ -f "$example" ]]; then
+            cp "$example" "$CONFIG_FILE"
+            warn "$(t common_config_created "$CONFIG_FILE")"
         else
-            die "Fichier de config introuvable : $CONFIG_FILE"
+            die "$(t common_config_missing "$CONFIG_FILE")"
         fi
     fi
+    set -a
     # shellcheck disable=SC1090
     source "$CONFIG_FILE"
+    set +a
 }
 
 banner() {
@@ -143,6 +165,6 @@ cat <<'EOF'
  | |_) | |___ / __/| |__| |_| | | |_) | |___ / ___ \ ___) || |
  |____/ \____|_____|_____\___/  |____/|_____/_/   \_\____/ |_|
 
-        AMD BC-250 -> Steam Machine plein potentiel
 EOF
+printf '        %s\n' "$(t common_banner_tagline)"
 }

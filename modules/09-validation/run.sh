@@ -7,7 +7,7 @@ source "${BC250_ROOT}/lib/common.sh"
 
 require_bc250
 
-title "09 - Validation & Benchmark"
+title "$(t m09_title)"
 
 # ------------------------------------------------------------------
 # Compteurs de résultats
@@ -39,7 +39,7 @@ report_result() {
             printf "  ${C_YELLOW}⚠${C_NC} %-40s %s\n" "$test_name" "${message:-}"
             ;;
         *)
-            die "Statut invalide pour report_result : $status"
+            die "$(t m09_invalid_status "$status")"
             ;;
     esac
 }
@@ -52,7 +52,7 @@ run_cmd() {
     shift
     if [[ "${DRY_RUN:-0}" == "1" ]]; then
         log "[DRY-RUN] $description"
-        log "[DRY-RUN] Commande : $*"
+        log "$(t m09_dry_cmd "$*")"
         return 0
     fi
     "$@"
@@ -61,28 +61,28 @@ run_cmd() {
 # ------------------------------------------------------------------
 # TESTS INSTANTANÉS (non-bloquants)
 # ------------------------------------------------------------------
-title "Tests instantanés"
+title "$(t m09_instant_title)"
 
 # 1) CPU Cores
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification du nombre de cœurs CPU (attendu : 16 threads / 8 cœurs physiques)"
-    report_result "CPU Cores (16 threads / 8 cœurs)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_cpu_cores)"
+    report_result "$(t m09_t_cpu_cores_16)" "pass" "[DRY-RUN]"
 else
     cpu_threads=$(nproc)
     # 8 cœurs physiques = 16 threads avec SMT
     if [[ "$cpu_threads" -eq 16 ]]; then
-        report_result "CPU Cores (16 threads / 8 cœurs)" "pass" "$cpu_threads threads détectés"
+        report_result "$(t m09_t_cpu_cores_16)" "pass" "$(t m09_threads_detected "$cpu_threads")"
     elif [[ "$cpu_threads" -eq 8 ]]; then
-        report_result "CPU Cores (8 threads / 4 cœurs)" "warn" "$cpu_threads threads — déblocage 8 cœurs non appliqué (module 03)"
+        report_result "$(t m09_t_cpu_cores_8)" "warn" "$(t m09_threads_not_unlocked "$cpu_threads")"
     else
-        report_result "CPU Cores" "fail" "$cpu_threads threads — inattendu"
+        report_result "$(t m09_t_cpu_cores)" "fail" "$(t m09_threads_unexpected "$cpu_threads")"
     fi
 fi
 
 # 2) CPU Fréquence
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification de la fréquence CPU (config : ${CPU_FREQ_MHZ:-3850} MHz ±100 MHz)"
-    report_result "CPU Fréquence (proche de CPU_FREQ_MHZ)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_cpu_freq "${CPU_FREQ_MHZ:-3850}")"
+    report_result "$(t m09_t_cpu_freq_near)" "pass" "[DRY-RUN]"
 else
     target_freq="${CPU_FREQ_MHZ:-3850}"
     # Lire la fréquence actuelle depuis /proc/cpuinfo (première entrée cpu MHz)
@@ -90,21 +90,21 @@ else
     if [[ -n "$current_freq_mhz" && "$current_freq_mhz" -gt 0 ]]; then
         diff=$((current_freq_mhz > target_freq ? current_freq_mhz - target_freq : target_freq - current_freq_mhz))
         if [[ $diff -le 100 ]]; then
-            report_result "CPU Fréquence (proche de CPU_FREQ_MHZ)" "pass" "${current_freq_mhz} MHz (cible: ${target_freq} MHz)"
+            report_result "$(t m09_t_cpu_freq_near)" "pass" "$(t m09_freq_target "$current_freq_mhz" "$target_freq")"
         elif [[ $diff -le 200 ]]; then
-            report_result "CPU Fréquence (écart ≤ 200 MHz)" "warn" "${current_freq_mhz} MHz (cible: ${target_freq} MHz, écart: ${diff} MHz)"
+            report_result "$(t m09_t_cpu_freq_diff200)" "warn" "$(t m09_freq_target_diff "$current_freq_mhz" "$target_freq" "$diff")"
         else
-            report_result "CPU Fréquence (écart > 200 MHz)" "warn" "${current_freq_mhz} MHz (cible: ${target_freq} MHz, écart: ${diff} MHz)"
+            report_result "$(t m09_t_cpu_freq_diff_gt200)" "warn" "$(t m09_freq_target_diff "$current_freq_mhz" "$target_freq" "$diff")"
         fi
     else
-        report_result "CPU Fréquence" "warn" "Impossible de lire /proc/cpuinfo"
+        report_result "$(t m09_t_cpu_freq)" "warn" "$(t m09_cpuinfo_unreadable)"
     fi
 fi
 
 # 3) GPU CU actives
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification des CU GPU actives via bc250-cu-live-manager (config: ${GPU_CU_MODE:-full})"
-    report_result "GPU CU actives (match GPU_CU_MODE)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_gpu_cu "${GPU_CU_MODE:-full}")"
+    report_result "$(t m09_t_gpu_cu_match)" "pass" "[DRY-RUN]"
 else
     cu_manager="${BC250_ROOT}/vendor/bc250-cu-live-manager/bc250-cu-live-manager.sh"
     if [[ -x "$cu_manager" ]]; then
@@ -121,43 +121,43 @@ else
             esac
             if [[ "$expected_cus" != "?" && "$active_cus" != "?" ]]; then
                 if [[ "$active_cus" -eq "$expected_cus" ]]; then
-                    report_result "GPU CU actives (match GPU_CU_MODE)" "pass" "${active_cus} CU actives (attendu: ${expected_cus})"
+                    report_result "$(t m09_t_gpu_cu_match)" "pass" "$(t m09_cu_active_expected "$active_cus" "$expected_cus")"
                 else
-                    report_result "GPU CU actives (écart vs GPU_CU_MODE)" "warn" "${active_cus} CU actives (attendu: ${expected_cus} pour mode ${target_mode})"
+                    report_result "$(t m09_t_gpu_cu_mismatch)" "warn" "$(t m09_cu_active_expected_mode "$active_cus" "$expected_cus" "$target_mode")"
                 fi
             else
-                report_result "GPU CU actives" "warn" "${active_cus} CU actives détectées (mode config: ${target_mode})"
+                report_result "$(t m09_t_gpu_cu)" "warn" "$(t m09_cu_detected_mode "$active_cus" "$target_mode")"
             fi
         else
-            report_result "GPU CU actives" "warn" "Impossible de parser la sortie de bc250-cu-live-manager"
+            report_result "$(t m09_t_gpu_cu)" "warn" "$(t m09_cu_parse_fail)"
         fi
     else
-        report_result "GPU CU actives" "warn" "bc250-cu-live-manager non installé ou non exécutable"
+        report_result "$(t m09_t_gpu_cu)" "warn" "$(t m09_cu_manager_missing)"
     fi
 fi
 
 # 4) Services systemd
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification des services systemd (bc250-core-unlock, bc250-smu-oc, cyan-skillfish-governor)"
-    report_result "Service bc250-core-unlock" "pass" "[DRY-RUN]"
-    report_result "Service bc250-smu-oc" "pass" "[DRY-RUN]"
-    report_result "Service cyan-skillfish-governor" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_services)"
+    report_result "$(t m09_t_service bc250-core-unlock)" "pass" "[DRY-RUN]"
+    report_result "$(t m09_t_service bc250-smu-oc)" "pass" "[DRY-RUN]"
+    report_result "$(t m09_t_service cyan-skillfish-governor)" "pass" "[DRY-RUN]"
 else
     for svc in bc250-core-unlock.service bc250-smu-oc cyan-skillfish-governor; do
         if systemctl is-active --quiet "$svc" 2>/dev/null; then
-            report_result "Service $svc" "pass" "actif"
+            report_result "$(t m09_t_service "$svc")" "pass" "$(t m09_svc_active)"
         elif systemctl is-enabled --quiet "$svc" 2>/dev/null; then
-            report_result "Service $svc" "warn" "activé mais non actif (démarrage ?)"
+            report_result "$(t m09_t_service "$svc")" "warn" "$(t m09_svc_enabled_inactive)"
         else
-            report_result "Service $svc" "fail" "inactif / non activé"
+            report_result "$(t m09_t_service "$svc")" "fail" "$(t m09_svc_inactive)"
         fi
     done
 fi
 
 # 5) BIOS VRAM
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification allocation VRAM BIOS (cible: ${BIOS_TARGET_VRAM_MB:-512} Mo)"
-    report_result "BIOS VRAM (512 Mo)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_vram "${BIOS_TARGET_VRAM_MB:-512}")"
+    report_result "$(t m09_t_vram_target 512)" "pass" "[DRY-RUN]"
 else
     vram_mb=0
     # Essayer via lspci -v (cherche Memory derrière le device VGA)
@@ -178,21 +178,21 @@ else
 
     target_vram="${BIOS_TARGET_VRAM_MB:-512}"
     if [[ "$vram_mb" -eq "$target_vram" ]]; then
-        report_result "BIOS VRAM (${target_vram} Mo)" "pass" "${vram_mb} Mo détectés"
+        report_result "$(t m09_t_vram_target "$target_vram")" "pass" "$(t m09_vram_detected "$vram_mb")"
     elif [[ "$vram_mb" -eq 8192 ]]; then
-        report_result "BIOS VRAM (8 Go = défaut usine)" "warn" "VRAM à 8 Go (défaut), bascule 512 Mo non appliquée (module 02)"
+        report_result "$(t m09_t_vram_default)" "warn" "$(t m09_vram_default_msg)"
     elif [[ "$vram_mb" -gt 0 ]]; then
-        report_result "BIOS VRAM" "warn" "${vram_mb} Mo détectés (cible: ${target_vram} Mo)"
+        report_result "$(t m09_t_vram)" "warn" "$(t m09_vram_detected_target "$vram_mb" "$target_vram")"
     else
-        report_result "BIOS VRAM" "warn" "Impossible de déterminer l'allocation VRAM"
+        report_result "$(t m09_t_vram)" "warn" "$(t m09_vram_unknown)"
     fi
 fi
 
 # 6) Températures
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification des températures CPU/GPU via sensors"
-    report_result "Température CPU (≤ 85°C)" "pass" "[DRY-RUN]"
-    report_result "Température GPU (≤ 80°C)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_temps)"
+    report_result "$(t m09_t_cpu_temp_ok)" "pass" "[DRY-RUN]"
+    report_result "$(t m09_t_gpu_temp_ok)" "pass" "[DRY-RUN]"
 else
     if command -v sensors &>/dev/null; then
         sensors_output=$(sensors 2>/dev/null || true)
@@ -213,32 +213,32 @@ else
 
         if [[ "$cpu_temp" -gt 0 ]]; then
             if [[ "$cpu_temp" -le 85 ]]; then
-                report_result "Température CPU (≤ 85°C)" "pass" "${cpu_temp}°C"
+                report_result "$(t m09_t_cpu_temp_ok)" "pass" "${cpu_temp}°C"
             else
-                report_result "Température CPU (> 85°C)" "warn" "${cpu_temp}°C — vérifier refroidissement (module 01)"
+                report_result "$(t m09_t_cpu_temp_high)" "warn" "$(t m09_temp_check_cooling "$cpu_temp")"
             fi
         else
-            report_result "Température CPU" "warn" "Non détectée via sensors"
+            report_result "$(t m09_t_cpu_temp)" "warn" "$(t m09_temp_not_detected)"
         fi
 
         if [[ "$gpu_temp" -gt 0 ]]; then
             if [[ "$gpu_temp" -le 80 ]]; then
-                report_result "Température GPU (≤ 80°C)" "pass" "${gpu_temp}°C"
+                report_result "$(t m09_t_gpu_temp_ok)" "pass" "${gpu_temp}°C"
             else
-                report_result "Température GPU (> 80°C)" "warn" "${gpu_temp}°C — vérifier refroidissement (module 01)"
+                report_result "$(t m09_t_gpu_temp_high)" "warn" "$(t m09_temp_check_cooling "$gpu_temp")"
             fi
         else
-            report_result "Température GPU" "warn" "Non détectée via sensors"
+            report_result "$(t m09_t_gpu_temp)" "warn" "$(t m09_temp_not_detected)"
         fi
     else
-        report_result "Température CPU/GPU" "warn" "Commande 'sensors' non disponible (lm-sensors non installé)"
+        report_result "$(t m09_t_temps)" "warn" "$(t m09_sensors_missing)"
     fi
 fi
 
 # 7) Voltage CPU (sécurité absolue)
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification voltage CPU via bc250_smu_oc ou sensors (seuil dur: 1300 mV, tolérance ±50 mV vs CPU_VID_MV=${CPU_VID_MV:-1150})"
-    report_result "Voltage CPU (≤ 1300 mV, tolérance ±50 mV)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_voltage "${CPU_VID_MV:-1150}")"
+    report_result "$(t m09_t_voltage_ok)" "pass" "[DRY-RUN]"
 else
     cpu_voltage_mv=0
     voltage_source=""
@@ -282,25 +282,25 @@ else
     if [[ "$cpu_voltage_mv" -gt 0 ]]; then
         # Seuil dur sécurité : > 1300 mV = FAIL
         if [[ "$cpu_voltage_mv" -gt 1300 ]]; then
-            report_result "Voltage CPU (> 1300 mV = DANGER)" "fail" "${cpu_voltage_mv} mV (source: ${voltage_source}) — DÉPASSE LE SEUIL ABSOLU DE SÉCURITÉ"
+            report_result "$(t m09_t_voltage_danger)" "fail" "$(t m09_voltage_danger_msg "$cpu_voltage_mv" "$voltage_source")"
         else
             # Tolérance ±50 mV vs config
             diff=$((cpu_voltage_mv > target_vid ? cpu_voltage_mv - target_vid : target_vid - cpu_voltage_mv))
             if [[ $diff -le 50 ]]; then
-                report_result "Voltage CPU (≤ 1300 mV, tolérance ±50 mV)" "pass" "${cpu_voltage_mv} mV (cible: ${target_vid} mV, source: ${voltage_source})"
+                report_result "$(t m09_t_voltage_ok)" "pass" "$(t m09_voltage_ok_msg "$cpu_voltage_mv" "$target_vid" "$voltage_source")"
             else
-                report_result "Voltage CPU (écart > 50 mV vs config)" "warn" "${cpu_voltage_mv} mV (cible: ${target_vid} mV, écart: ${diff} mV, source: ${voltage_source})"
+                report_result "$(t m09_t_voltage_diff)" "warn" "$(t m09_voltage_diff_msg "$cpu_voltage_mv" "$target_vid" "$diff" "$voltage_source")"
             fi
         fi
     else
-        report_result "Voltage CPU" "warn" "Voltage non lisible (bc250_smu_oc, bc250_detect.py, sensors Vcore) — vérifiez manuellement"
+        report_result "$(t m09_t_voltage)" "warn" "$(t m09_voltage_unreadable)"
     fi
 fi
 
 # 8) Fréquence GPU
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Vérification fréquence GPU via /sys/class/drm/card0/device/pp_dpm_sclk ou rocm-smi (cible: ${GPU_FREQ_MHZ:-2000} MHz ±100 MHz)"
-    report_result "Fréquence GPU (proche de GPU_FREQ_MHZ ±100 MHz)" "pass" "[DRY-RUN]"
+    log "$(t m09_dry_gpu_freq "${GPU_FREQ_MHZ:-2000}")"
+    report_result "$(t m09_t_gpu_freq_near)" "pass" "[DRY-RUN]"
 else
     target_gpu_freq="${GPU_FREQ_MHZ:-2000}"
     current_gpu_freq=0
@@ -330,12 +330,12 @@ else
     if [[ "$current_gpu_freq" -gt 0 ]]; then
         diff=$((current_gpu_freq > target_gpu_freq ? current_gpu_freq - target_gpu_freq : target_gpu_freq - current_gpu_freq))
         if [[ $diff -le 100 ]]; then
-            report_result "Fréquence GPU (proche de GPU_FREQ_MHZ ±100 MHz)" "pass" "${current_gpu_freq} MHz (cible: ${target_gpu_freq} MHz, source: ${gpu_freq_source})"
+            report_result "$(t m09_t_gpu_freq_near)" "pass" "$(t m09_gpu_freq_msg "$current_gpu_freq" "$target_gpu_freq" "$gpu_freq_source")"
         else
-            report_result "Fréquence GPU (écart > 100 MHz vs config)" "warn" "${current_gpu_freq} MHz (cible: ${target_gpu_freq} MHz, écart: ${diff} MHz, source: ${gpu_freq_source})"
+            report_result "$(t m09_t_gpu_freq_diff)" "warn" "$(t m09_gpu_freq_diff_msg "$current_gpu_freq" "$target_gpu_freq" "$diff" "$gpu_freq_source")"
         fi
     else
-        report_result "Fréquence GPU" "warn" "Non lisible (pp_dpm_sclk absent, rocm-smi absent) — vérifiez manuellement"
+        report_result "$(t m09_t_gpu_freq)" "warn" "$(t m09_gpu_freq_unreadable)"
     fi
 fi
 
@@ -343,65 +343,66 @@ fi
 # TESTS DE STABILITÉ (optionnels, avec confirmation)
 # ------------------------------------------------------------------
 echo
-title "Tests de stabilité (optionnels)"
+title "$(t m09_stability_title)"
 
 # Durée du stress test
 stress_duration=300
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
-    log "[DRY-RUN] Tests de stabilité : demande de confirmation simulée = OUI, durée = ${stress_duration}s"
+    log "$(t m09_dry_stability "$stress_duration")"
     run_stability="y"
 else
     if [[ "${BC250_YES:-0}" == "1" ]]; then
-        log "BC250_YES=1 : durée par défaut 300 s (recommandé)."
+        log "$(t m09_yes_duration)"
     else
-        read -rp "$(printf "${C_YELLOW}Durée des tests de stabilité : 300 s (recommandé) ou 60 s (rapide) ? [300/60] : ${C_NC}")" duration_choice
+        read -rp "$(printf "${C_YELLOW}%s${C_NC}" "$(t m09_duration_prompt)")" duration_choice
         case "$duration_choice" in
             60) stress_duration=60 ;;
             "") stress_duration=300 ;;
             *) stress_duration=300 ;;
         esac
     fi
-    read -rp "$(printf "${C_YELLOW}Voulez-vous lancer les tests de stabilité (${stress_duration}s CPU + ${stress_duration}s GPU) ? [y/N] : ${C_NC}")" run_stability
+    read -rp "$(printf "${C_YELLOW}%s${C_NC}" "$(t m09_run_stability_prompt "$stress_duration" "$stress_duration" "$(t common_yn)")")" run_stability
 fi
 
-if [[ "$run_stability" =~ ^[Yy]$ ]]; then
+yes_re="$(t common_yes_regex)"
+if [[ "$run_stability" =~ $yes_re ]]; then
     # Stabilité CPU
     if [[ "${DRY_RUN:-0}" == "1" ]]; then
         log "[DRY-RUN] stress-ng --cpu $(nproc) --timeout ${stress_duration}s"
-        report_result "Stabilité CPU (stress-ng ${stress_duration}s)" "pass" "[DRY-RUN]"
+        report_result "$(t m09_t_cpu_stability "$stress_duration")" "pass" "[DRY-RUN]"
     else
         if command -v stress-ng &>/dev/null; then
-            log "Lancement stress-ng CPU ${stress_duration}s (utilise tous les cœurs)..."
+            log "$(t m09_stress_cpu_start "$stress_duration")"
             if stress-ng --cpu "$(nproc)" --timeout "${stress_duration}s" --metrics-brief 2>/dev/null; then
-                report_result "Stabilité CPU (stress-ng ${stress_duration}s)" "pass" "Terminé sans erreur"
+                report_result "$(t m09_t_cpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
             else
-                report_result "Stabilité CPU (stress-ng ${stress_duration}s)" "fail" "Échec ou interruption — instabilité détectée"
+                report_result "$(t m09_t_cpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
             fi
         else
-            report_result "Stabilité CPU (stress-ng ${stress_duration}s)" "warn" "stress-ng non installé (pkg_install stress-ng pour l'ajouter)"
+            report_result "$(t m09_t_cpu_stability "$stress_duration")" "warn" "$(t m09_stress_ng_missing)"
         fi
     fi
 
     # Stabilité GPU
     if [[ "${DRY_RUN:-0}" == "1" ]]; then
-        log "[DRY-RUN] Test GPU FurMark ${stress_duration}s"
-        report_result "Stabilité GPU (FurMark ${stress_duration}s)" "pass" "[DRY-RUN]"
+        log "$(t m09_dry_furmark "$stress_duration")"
+        report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "[DRY-RUN]"
     else
         if command -v FurMark &>/dev/null; then
-            log "Lancement FurMark GPU ${stress_duration}s..."
+            log "$(t m09_furmark_start "$stress_duration")"
             if FurMark -t "${stress_duration}" 2>/dev/null; then
-                report_result "Stabilité GPU (FurMark ${stress_duration}s)" "pass" "Terminé sans erreur"
+                report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
             else
-                report_result "Stabilité GPU (FurMark ${stress_duration}s)" "fail" "Échec ou interruption — instabilité détectée"
+                report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
             fi
         else
-            report_result "Stabilité GPU (FurMark ${stress_duration}s)" "warn" "FurMark non installé, test GPU ignoré"
+            report_result "$(t m09_t_gpu_stability "$stress_duration")" "warn" "$(t m09_furmark_missing)"
         fi
     fi
 else
-    log "Tests de stabilité ignorés sur demande utilisateur."
-    report_result "Stabilité CPU (stress-ng ${stress_duration}s)" "warn" "Ignoré (choix utilisateur)"
-    report_result "Stabilité GPU (FurMark ${stress_duration}s)" "warn" "Ignoré (choix utilisateur)"
+    log "$(t m09_stability_skipped)"
+    report_result "$(t m09_t_cpu_stability "$stress_duration")" "warn" "$(t m09_skipped_user)"
+    report_result "$(t m09_t_gpu_stability "$stress_duration")" "warn" "$(t m09_skipped_user)"
 fi
 
 # ------------------------------------------------------------------
@@ -416,51 +417,67 @@ else
 fi
 
 if [[ $score -ge 90 ]]; then
-    score_label="${C_GREEN}EXCELLENT${C_NC}"
+    score_label="$(t m09_score_excellent)"; score_color="$C_GREEN"
 elif [[ $score -ge 70 ]]; then
-    score_label="${C_YELLOW}BON${C_NC}"
+    score_label="$(t m09_score_good)"; score_color="$C_YELLOW"
 else
-    score_label="${C_RED}À VÉRIFIER${C_NC}"
+    score_label="$(t m09_score_check)"; score_color="$C_RED"
 fi
 
-cat <<EOF
-╔══════════════════════════════════════╗
-║   RAPPORT DE VALIDATION BC-250       ║
-╠══════════════════════════════════════╣
-║  Tests réussis :  ${PASS}  ${C_GREEN}✓${C_NC}               ║
-║  Avertissements:  ${WARN}  ${C_YELLOW}⚠${C_NC}               ║
-║  Échecs        :  ${FAIL}  ${C_RED}✗${C_NC}               ║
-╠══════════════════════════════════════╣
-║  Score global  :  ${score}%  ${score_label}   ║
-╚══════════════════════════════════════╝
-EOF
+# Encadré : largeur calculée sur le texte SANS codes couleur pour rester
+# aligné quelle que soit la langue (les libellés n'ont pas la même longueur).
+BOX_W=40
+box_rule() { # $1 gauche, $2 droite
+    local line=""
+    local i
+    for ((i = 0; i < BOX_W; i++)); do line+="═"; done
+    printf '%s%s%s\n' "$1" "$line" "$2"
+}
+box_line() { # $1 texte brut (pour la largeur), $2 texte affiché (couleurs)
+    local plain="$1" shown="${2:-$1}"
+    local pad=$(( BOX_W - 2 - ${#plain} ))
+    (( pad < 0 )) && pad=0
+    printf '║ %s%*s ║\n' "$shown" "$pad" ''
+}
+pad_right() { # $1 texte, $2 largeur -> texte complété d'espaces (par caractères)
+    local s="$1" w="$2"
+    while (( ${#s} < w )); do s+=" "; done
+    printf '%s' "$s"
+}
+LBL_W=16
+lbl_pass="$(pad_right "$(t m09_report_passed)" $LBL_W)"
+lbl_warn="$(pad_right "$(t m09_report_warnings)" $LBL_W)"
+lbl_fail="$(pad_right "$(t m09_report_failures)" $LBL_W)"
+lbl_score="$(pad_right "$(t m09_report_score)" $LBL_W)"
+
+box_rule '╔' '╗'
+box_line "  $(t m09_report_title)"
+box_rule '╠' '╣'
+box_line "$(printf '%s: %3d  ✓' "$lbl_pass" "$PASS")" "$(printf "%s: %3d  ${C_GREEN}✓${C_NC}" "$lbl_pass" "$PASS")"
+box_line "$(printf '%s: %3d  ⚠' "$lbl_warn" "$WARN")" "$(printf "%s: %3d  ${C_YELLOW}⚠${C_NC}" "$lbl_warn" "$WARN")"
+box_line "$(printf '%s: %3d  ✗' "$lbl_fail" "$FAIL")" "$(printf "%s: %3d  ${C_RED}✗${C_NC}" "$lbl_fail" "$FAIL")"
+box_rule '╠' '╣'
+box_line "$(printf '%s: %3d%%  %s' "$lbl_score" "$score" "$score_label")" "$(printf "%s: %3d%%  ${score_color}%s${C_NC}" "$lbl_score" "$score" "$score_label")"
+box_rule '╚' '╝'
 
 # ------------------------------------------------------------------
 # RECOMMANDATIONS
 # ------------------------------------------------------------------
 if [[ $FAIL -gt 0 || $WARN -gt 0 ]]; then
     echo
-    title "Recommandations"
+    title "$(t m09_reco_title)"
     if [[ $FAIL -gt 0 ]]; then
         # Vérifier quels tests ont échoué pour donner des conseils ciblés
         # On ne peut pas facilement tracker quels tests ont échoué sans stocker les noms
         # Donc on donne des conseils génériques basés sur les patterns communs
-        echo "  • Des tests ont échoué. Vérifiez les modules correspondants :"
-        echo "    - Si cœurs CPU non débloqués       → relancez le module 03"
-        echo "    - Si services systemd inactifs     → journalctl -u <service> pour diagnostiquer"
-        echo "    - Si fréquence CPU instable        → revoyez module 05 (CPU OC) + stress test"
-        echo "    - Si VRAM non basculée à 512 Mo    → refaites le module 02 (BIOS/UEFI)"
+        t m09_reco_fail
     fi
     if [[ $WARN -gt 0 ]]; then
-        echo "  • Des avertissements ont été émis :"
-        echo "    - Températures élevées             → vérifiez le refroidissement (module 01)"
-        echo "    - GPU CU / Fréquence non conformes → revoyez modules 04, 05, 06"
-        echo "    - Outils manquants (sensors, FurMark, stress-ng)"
-        echo "      → installez-les via votre gestionnaire de paquets"
+        t m09_reco_warn
     fi
 fi
 
-log "Module 09 terminé (Score: ${score}% — ${PASS}P/${WARN}W/${FAIL}F)."
+log "$(t m09_done "$score" "$PASS" "$WARN" "$FAIL")"
 
 # Le code de sortie DOIT refléter les échecs : sans ça, install.sh --all
 # rapporte un succès (rc=0) même si des tests matériels ont échoué, puisque

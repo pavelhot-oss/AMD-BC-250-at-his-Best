@@ -4,7 +4,7 @@
 set -uo pipefail
 source "${BC250_ROOT}/lib/common.sh"
 
-title "07 - Réglages système (zswap / mitigations / MangoHud)"
+title "$(t m07_title)"
 require_root
 
 DISTRO="$(detect_distro)"
@@ -14,7 +14,7 @@ DISTRO="$(detect_distro)"
 # issue de la description officielle de la vidéo Part XIV)
 # --------------------------------------------------------------
 setup_zswap_ostree() {
-    log "Activation de zswap + mitigations=off via kernel args (rpm-ostree)..."
+    log "$(t m07_zswap_ostree)"
     # Sur ostree : on n'utilise JAMAIS /etc/default/grub, tout passe par rpm-ostree kargs
     local zswap_args=(
         "zswap.enabled=1"
@@ -29,7 +29,7 @@ setup_zswap_ostree() {
         log "[DRY-RUN] rpm-ostree kargs --append-if-missing ${mitigation_args[*]}"
         log "[DRY-RUN] rpm-ostree initramfs --enable --arg=--add-drivers --arg=${ZSWAP_COMPRESSOR:-lz4}"
         flag_reboot_needed
-        warn "[DRY-RUN] Un reboot serait nécessaire (système immutable rpm-ostree)."
+        warn "$(t m07_dry_reboot)"
         return 0
     fi
 
@@ -37,28 +37,28 @@ setup_zswap_ostree() {
     rpm-ostree kargs --append-if-missing "${mitigation_args[@]}"
     rpm-ostree initramfs --enable --arg=--add-drivers --arg="${ZSWAP_COMPRESSOR:-lz4}"
     flag_reboot_needed
-    warn "Un reboot est nécessaire (système immutable rpm-ostree)."
-    warn "Relancez ce module après le reboot : il détectera que les kernel args sont déjà actifs."
+    warn "$(t m07_ostree_reboot)"
+    warn "$(t m07_rerun_after_reboot)"
 }
 
 setup_swapfile_btrfs() {
     local size="${SWAPFILE_SIZE_GB:-32}"
     if ! findmnt -no FSTYPE /var &>/dev/null || [[ "$(findmnt -no FSTYPE /var)" != "btrfs" ]]; then
-        warn "/var n'est pas sur Btrfs sur ce système — la procédure officielle (swapfile Btrfs"
-        warn "dédié) ne s'applique pas telle quelle. Créez un swapfile classique manuellement,"
-        warn "ou passez ce sous-module si vous n'êtes pas sur Bazzite/Btrfs."
+        warn "$(t m07_var_not_btrfs_1)"
+        warn "$(t m07_var_not_btrfs_2)"
+        warn "$(t m07_var_not_btrfs_3)"
         return 0
     fi
 
     if [[ "${DRY_RUN:-0}" == "1" ]]; then
         log "[DRY-RUN] swapoff -a"
-        log "[DRY-RUN] rm -rf /var/swap (si existant)"
+        log "$(t m07_dry_rm_swap)"
         log "[DRY-RUN] btrfs subvolume create /var/swap"
         if command -v semanage &>/dev/null; then
             log "[DRY-RUN] semanage fcontext -a -t var_t '/var/swap(/.*)?'"
             log "[DRY-RUN] restorecon -Rv /var/swap"
         else
-            log "[DRY-RUN] rpm-ostree install --idempotent policycoreutils-python-utils (reboot requis)"
+            log "$(t m07_dry_semanage_install)"
         fi
         log "[DRY-RUN] btrfs filesystem mkswapfile --size ${size}G /var/swap/swapfile"
         log "[DRY-RUN] semanage fcontext -a -t swapfile_t '/var/swap/swapfile'"
@@ -69,54 +69,54 @@ setup_swapfile_btrfs() {
         local swappiness="${SWAPPINESS:-120}"
         log "[DRY-RUN] echo 'vm.swappiness=${swappiness}' > /etc/sysctl.d/99-swappiness.conf"
         log "[DRY-RUN] sysctl -p /etc/sysctl.d/99-swappiness.conf"
-        log "[DRY-RUN] Vérification finale : rpm-ostree kargs, zswap enabled, swappiness, swapon --show"
+        log "$(t m07_dry_final_check)"
         return 0
     fi
 
-    log "Désactivation du swap existant..."
+    log "$(t m07_swapoff)"
     swapoff -a || true
 
     if [[ -d /var/swap ]]; then
-        log "Suppression de l'ancien /var/swap..."
+        log "$(t m07_rm_old_swap)"
         rm -rf /var/swap
     fi
 
-    log "Création du subvolume Btrfs /var/swap..."
+    log "$(t m07_create_subvol)"
     btrfs subvolume create /var/swap
 
     if command -v semanage &>/dev/null; then
-        log "Correction du contexte SELinux..."
+        log "$(t m07_selinux_fix)"
         semanage fcontext -a -t var_t "/var/swap(/.*)?"
         restorecon -Rv /var/swap
     else
-        warn "semanage absent, installation de policycoreutils-python-utils requise (rpm-ostree, reboot)."
+        warn "$(t m07_semanage_missing)"
         rpm-ostree install --idempotent policycoreutils-python-utils
         flag_reboot_needed
-        warn "Relancez ce sous-module après reboot pour finir le SELinux + créer le swapfile."
+        warn "$(t m07_rerun_selinux)"
         return 0
     fi
 
-    log "Création du swapfile de ${size}G..."
+    log "$(t m07_create_swapfile "$size")"
     btrfs filesystem mkswapfile --size "${size}G" /var/swap/swapfile
     semanage fcontext -a -t swapfile_t "/var/swap/swapfile"
     restorecon -v /var/swap/swapfile
 
-    log "Ajout à /etc/fstab..."
+    log "$(t m07_fstab)"
     sed -i '\|/var/swap/swapfile|d' /etc/fstab
     echo "/var/swap/swapfile none swap defaults,nofail 0 0" >> /etc/fstab
 
-    log "Activation immédiate du swap..."
+    log "$(t m07_swapon)"
     swapon -a
     swapon --show
 
     local swappiness="${SWAPPINESS:-120}"
-    log "Réglage de vm.swappiness=${swappiness} (optimisé jeu)..."
+    log "$(t m07_swappiness "$swappiness")"
     echo "vm.swappiness=${swappiness}" > /etc/sysctl.d/99-swappiness.conf
     sysctl -p /etc/sysctl.d/99-swappiness.conf
 
-    log "Vérification finale :"
+    log "$(t m07_final_check)"
     rpm-ostree kargs 2>/dev/null | grep -o 'zswap[^ ]*' || true
-    cat /sys/module/zswap/parameters/enabled 2>/dev/null || warn "zswap pas encore actif (reboot en attente ?)"
+    cat /sys/module/zswap/parameters/enabled 2>/dev/null || warn "$(t m07_zswap_not_active)"
     cat /proc/sys/vm/swappiness
     swapon --show
 }
@@ -128,7 +128,7 @@ setup_swapfile_btrfs() {
 # d'être dans un scope de fonction (sinon `local` échoue silencieusement
 # sous `set -u` et fait planter tout le module — cf audit du 24/08/2026).
 install_mangohud() {
-    title "Installation de MangoHud (overlay FPS/temp/usage GPU-CPU)"
+    title "$(t m07_mangohud_title)"
 
     # Détection steamos (Steam Deck / SteamOS) — MangoHud préinstallé
     local is_steamos=0
@@ -139,10 +139,10 @@ install_mangohud() {
     if [[ "${DRY_RUN:-0}" == "1" ]]; then
         case "$DISTRO" in
             bazzite-ostree)
-                log "[DRY-RUN] MangoHud est généralement préinstallé sur Bazzite. Vérification : command -v mangohud || pkg_install mangohud" ;;
+                log "$(t m07_dry_mangohud_bazzite)" ;;
             steamos|fedora-ostree|fedora)
                 if [[ $is_steamos -eq 1 ]]; then
-                    log "[DRY-RUN] MangoHud préinstallé sur SteamOS — skip installation"
+                    log "$(t m07_dry_mangohud_steamos)"
                 else
                     log "[DRY-RUN] pkg_install mangohud"
                 fi
@@ -150,15 +150,15 @@ install_mangohud() {
             arch)   log "[DRY-RUN] pkg_install mangohud" ;;
             debian) log "[DRY-RUN] pkg_install mangohud" ;;
         esac
-        log "[DRY-RUN] Pour activer dans Steam : ajoutez 'mangohud %command%' aux options de lancement d'un jeu."
+        log "[DRY-RUN] $(t m07_mangohud_steam_hint)"
     else
         case "$DISTRO" in
             bazzite-ostree)
-                log "MangoHud est généralement préinstallé sur Bazzite. Vérification..."
-                command -v mangohud &>/dev/null && log "MangoHud déjà présent." || pkg_install mangohud ;;
+                log "$(t m07_mangohud_bazzite_check)"
+                command -v mangohud &>/dev/null && log "$(t m07_mangohud_present)" || pkg_install mangohud ;;
             steamos|fedora-ostree|fedora)
                 if [[ $is_steamos -eq 1 ]]; then
-                    log "MangoHud préinstallé sur SteamOS — skip installation"
+                    log "$(t m07_mangohud_steamos)"
                 else
                     pkg_install mangohud
                 fi
@@ -166,7 +166,7 @@ install_mangohud() {
             arch)   pkg_install mangohud ;;
             debian) pkg_install mangohud ;;
         esac
-        log "Pour activer dans Steam : ajoutez 'mangohud %command%' aux options de lancement d'un jeu."
+        log "$(t m07_mangohud_steam_hint)"
     fi
 }
 
@@ -174,20 +174,20 @@ if [[ "${ENABLE_ZSWAP:-1}" == "1" ]]; then
     case "$DISTRO" in
         bazzite-ostree|fedora-ostree)
             if rpm-ostree kargs 2>/dev/null | grep -q 'zswap.enabled=1'; then
-                log "zswap déjà activé au niveau kernel, passage direct à la création du swapfile."
+                log "$(t m07_zswap_already)"
                 setup_swapfile_btrfs
             else
                 setup_zswap_ostree
             fi
             ;;
         arch|fedora|debian)
-            warn "Procédure officielle zswap+swapfile documentée pour Bazzite/rpm-ostree+Btrfs uniquement."
-            warn "Sur $DISTRO : activez zswap via GRUB_CMDLINE_LINUX (zswap.enabled=1 zswap.max_pool_percent=${ZSWAP_MAX_POOL_PERCENT:-25} zswap.compressor=${ZSWAP_COMPRESSOR:-lz4})"
-            warn "puis régénérez votre config bootloader (grub-mkconfig / bootctl / etc. selon votre setup), et créez un swapfile classique."
+            warn "$(t m07_zswap_other_distro_1)"
+            warn "$(t m07_zswap_other_distro_2 "$DISTRO" "${ZSWAP_MAX_POOL_PERCENT:-25}" "${ZSWAP_COMPRESSOR:-lz4}")"
+            warn "$(t m07_zswap_other_distro_3)"
             ;;
     esac
 else
-    warn "ENABLE_ZSWAP=0 dans la config, étape ignorée."
+    warn "$(t m07_zswap_disabled)"
 fi
 
 # --------------------------------------------------------------
@@ -197,37 +197,37 @@ fi
 # setup_zswap_ostree() pour éviter la duplication. Cette section ne s'applique
 # qu'aux distros non-ostree (arch, fedora, debian).
 if [[ "${DISABLE_CPU_MITIGATIONS:-0}" == "1" ]]; then
-    title "Désactivation des mitigations CPU (Spectre/Meltdown)"
-    warn "Ceci réduit la protection contre certaines attaques locales (side-channel)."
-    warn "Recommandé uniquement sur une machine de jeu dédiée, pas un poste multi-usage sensible."
-    if confirm "Confirmer la désactivation des mitigations CPU ?"; then
+    title "$(t m07_mitig_title)"
+    warn "$(t m07_mitig_warn_1)"
+    warn "$(t m07_mitig_warn_2)"
+    if confirm "$(t m07_mitig_confirm_q)"; then
         if [[ "${DRY_RUN:-0}" == "1" ]]; then
             case "$DISTRO" in
                 bazzite-ostree|fedora-ostree)
-                    log "[DRY-RUN] mitigations=off déjà appliqué via setup_zswap_ostree (rpm-ostree kargs)"
+                    log "[DRY-RUN] $(t m07_mitig_ostree_done)"
                     ;;
                 arch|fedora|debian)
-                    log "[DRY-RUN] Ajoutez 'mitigations=off' à GRUB_CMDLINE_LINUX (ou votre config systemd-boot),"
-                    log "[DRY-RUN] puis régénérez la config du bootloader (grub-mkconfig / bootctl / etc.) et redémarrez."
+                    log "[DRY-RUN] $(t m07_mitig_grub_1)"
+                    log "[DRY-RUN] $(t m07_mitig_grub_2_dry)"
                     ;;
             esac
             flag_reboot_needed
-            log "[DRY-RUN] Mitigations désactivées (effectif après reboot)."
+            log "[DRY-RUN] $(t m07_mitig_done)"
         else
             case "$DISTRO" in
                 bazzite-ostree|fedora-ostree)
-                    log "mitigations=off déjà appliqué via setup_zswap_ostree (rpm-ostree kargs)"
+                    log "$(t m07_mitig_ostree_done)"
                     ;;
                 arch|fedora|debian)
-                    warn "Ajoutez 'mitigations=off' à GRUB_CMDLINE_LINUX (ou votre config systemd-boot),"
-                    warn "puis régénérez la config du bootloader et redémarrez."
+                    warn "$(t m07_mitig_grub_1)"
+                    warn "$(t m07_mitig_grub_2)"
                     ;;
             esac
-            log "Mitigations désactivées (effectif après reboot)."
+            log "$(t m07_mitig_done)"
         fi
     fi
 else
-    log "DISABLE_CPU_MITIGATIONS=0 (ou absent), étape ignorée."
+    log "$(t m07_mitig_skipped)"
 fi
 
 if [[ "${INSTALL_MANGOHUD:-1}" == "1" ]]; then
@@ -235,4 +235,4 @@ if [[ "${INSTALL_MANGOHUD:-1}" == "1" ]]; then
 fi
 
 maybe_prompt_reboot
-log "Module 07 terminé."
+log "$(t m07_done)"

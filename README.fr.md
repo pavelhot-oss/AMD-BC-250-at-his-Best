@@ -36,13 +36,21 @@ source réel des dépôts communautaires (vendorisés dans `vendor/`).
 ## Démarrage rapide
 
 ```bash
+git clone --recurse-submodules https://github.com/tecmage/AMD-BC-250-at-his-Best.git
+cd AMD-BC-250-at-his-Best
 sudo ./install.sh
 ```
 
-Ouvre un menu interactif. Au premier lancement, `config/bc250-beast.conf`
-est créé à partir de `config/bc250-beast.conf.example` — **ouvrez-le et
-ajustez les valeurs à votre carte** (fréquences, voltages, mode CU) avant
-de lancer les modules d'overclock.
+Ouvre un menu interactif. Au premier lancement, la langue de l'interface
+(anglais / français) est demandée, puis `config/bc250-beast.conf` est créé
+à partir de `config/bc250-beast.conf.example.fr` (ou `.example` en anglais)
+— **ouvrez-le et ajustez les valeurs à votre carte** (fréquences, voltages,
+mode CU) avant de lancer les modules d'overclock.
+
+> Les outils communautaires de `vendor/` sont des sous-modules git. Si vous
+> avez cloné sans `--recurse-submodules`, lancez une fois
+> `git submodule update --init`, sinon les modules 02 à 05 ne trouveront
+> pas leurs outils.
 
 Autres modes :
 
@@ -52,7 +60,42 @@ sudo ./install.sh --module 03           # un seul module
 sudo ./install.sh --module 09           # batterie de validation post-install
 sudo ./install.sh --all                 # tout dans l'ordre recommandé
 sudo ./install.sh --all --force         # ignore la détection du BC-250 (dev/CI)
+sudo ./install.sh --lang fr             # force la langue de l'interface (en|fr)
 ```
+
+## Langue
+
+Menus, questions, lignes de log et rapport de validation existent en
+anglais et en français. La langue est déterminée dans cet ordre, le premier
+qui correspond l'emporte :
+
+1. `--lang en|fr` sur la ligne de commande (`install.sh` et `uninstall.sh`)
+2. la variable d'environnement `BC250_LANG` (`sudo BC250_LANG=fr ./install.sh`)
+3. `UI_LANG` dans `config/bc250-beast.conf`
+4. la locale de la session (`LC_ALL` / `LC_MESSAGES` / `LANG` commençant par `fr`)
+5. anglais
+
+L'entrée `l)` du menu interactif change de langue à tout moment et propose
+d'enregistrer le choix dans la config. Les deux exemples de config
+(`bc250-beast.conf.example` en anglais, `bc250-beast.conf.example.fr` en
+français) déclarent les mêmes variables avec les mêmes valeurs ; seuls les
+commentaires diffèrent.
+
+Tous les textes affichés sont dans `locale/en.sh` et `locale/fr.sh`, une
+ligne `MSG[cle]="..."` par message avec `%s` pour les arguments ; les
+scripts appellent `t <cle> [args]`. Après modification d'un catalogue,
+validez-le :
+
+```bash
+tools/check-i18n.sh
+```
+
+Il vérifie que les deux catalogues se chargent par le vrai chemin
+d'exécution, ont les mêmes clés avec le même nombre de `%s`, que chaque
+appel `t <cle>` des scripts vise une clé existante avec le bon nombre
+d'arguments, qu'aucune clé n'est orpheline, et que les deux exemples de
+config restent synchronisés. Les entrées non traduites ou suspectes sont
+signalées en avertissement.
 
 ## Distributions supportées
 
@@ -81,10 +124,14 @@ bc250-beast/
 ├── install.sh              # point d'entrée unique
 ├── uninstall.sh             # retire les changements persistants
 ├── config/
-│   └── bc250-beast.conf.example   # copié en .conf au 1er lancement
+│   ├── bc250-beast.conf.example      # copié en .conf au 1er lancement (anglais)
+│   └── bc250-beast.conf.example.fr   # mêmes valeurs, commentaires en français
 ├── lib/common.sh            # détection matériel/distro, logging, helpers
+├── lib/i18n.sh              # recherche des messages (t <cle>) et choix de langue
+├── locale/                  # catalogues de messages en.sh / fr.sh
+├── tools/check-i18n.sh      # validateur des catalogues (clés, %s, appels)
 ├── modules/                 # un dossier par étape, voir tableau ci-dessus
-├── vendor/                  # code source des outils communautaires, tel quel
+├── vendor/                  # code source des outils communautaires, en sous-modules git
 │   ├── bc250-core-unlock/          (rw-r-r-0644)
 │   ├── bc250-cu-live-manager/      (WinnieLV)
 │   ├── bc250-40cu-unlock/          (duggasco)

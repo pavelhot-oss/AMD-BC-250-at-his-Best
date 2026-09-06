@@ -36,13 +36,20 @@ source code of the community repositories (vendored in `vendor/`).
 ## Quick start
 
 ```bash
+git clone --recurse-submodules https://github.com/tecmage/AMD-BC-250-at-his-Best.git
+cd AMD-BC-250-at-his-Best
 sudo ./install.sh
 ```
 
-Opens an interactive menu. On first run, `config/bc250-beast.conf` is
-created from `config/bc250-beast.conf.example` — **open it and adjust the
-values to your card** (frequencies, voltages, CU mode) before running the
-overclock modules.
+Opens an interactive menu. On the first run it asks for the interface
+language (English / French), then `config/bc250-beast.conf` is created from
+`config/bc250-beast.conf.example` (or `.example.fr`) — **open it and adjust
+the values to your card** (frequencies, voltages, CU mode) before running
+the overclock modules.
+
+> The community tools under `vendor/` are git submodules. If you cloned
+> without `--recurse-submodules`, run `git submodule update --init` once,
+> otherwise modules 02 to 05 won't find their tools.
 
 Other modes:
 
@@ -52,7 +59,40 @@ sudo ./install.sh --module 03           # run a single module
 sudo ./install.sh --module 09           # post-install validation battery
 sudo ./install.sh --all                 # run everything in recommended order
 sudo ./install.sh --all --force         # skip BC-250 detection (dev/CI)
+sudo ./install.sh --lang fr             # force the interface language (en|fr)
 ```
+
+## Language
+
+Menus, prompts, log lines and the validation report are available in
+English and French. The language is resolved in this order, first match
+wins:
+
+1. `--lang en|fr` on the command line (`install.sh` and `uninstall.sh`)
+2. the `BC250_LANG` environment variable (`sudo BC250_LANG=fr ./install.sh`)
+3. `UI_LANG` in `config/bc250-beast.conf`
+4. the session locale (`LC_ALL` / `LC_MESSAGES` / `LANG` starting with `fr`)
+5. English
+
+The `l)` entry of the interactive menu switches language at any time and
+offers to save the choice to the config file. The two config examples
+(`bc250-beast.conf.example` in English, `bc250-beast.conf.example.fr` in
+French) declare the same variables with the same values; only the comments
+differ.
+
+Every user-facing string lives in `locale/en.sh` and `locale/fr.sh`, one
+`MSG[key]="..."` per message with `%s` for arguments; scripts call
+`t <key> [args]`. After editing a catalog, validate it:
+
+```bash
+tools/check-i18n.sh
+```
+
+It checks that both catalogs load through the real runtime path, share the
+same keys with the same number of `%s` placeholders, that every `t <key>`
+call in the scripts refers to an existing key with the right number of
+arguments, that no key is left unused, and that the two config examples
+stay in sync. Untranslated or suspicious entries are reported as warnings.
 
 ## Supported distributions
 
@@ -83,10 +123,14 @@ bc250-beast/
 ├── install.sh              # single entry point
 ├── uninstall.sh             # removes persistent changes
 ├── config/
-│   └── bc250-beast.conf.example   # copied to .conf on first run
+│   ├── bc250-beast.conf.example      # copied to .conf on first run (English)
+│   └── bc250-beast.conf.example.fr   # same values, French comments
 ├── lib/common.sh            # hardware/distro detection, logging, helpers
+├── lib/i18n.sh              # message lookup (t <key>) and language selection
+├── locale/                  # en.sh / fr.sh message catalogs
+├── tools/check-i18n.sh      # catalog validator (keys, placeholders, call sites)
 ├── modules/                 # one folder per step, see table above
-├── vendor/                  # community tools' source code, as-is
+├── vendor/                  # community tools' source code, as git submodules
 │   ├── bc250-core-unlock/          (rw-r-r-0644)
 │   ├── bc250-cu-live-manager/      (WinnieLV)
 │   ├── bc250-40cu-unlock/          (duggasco)

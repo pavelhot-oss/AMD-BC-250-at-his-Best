@@ -8,13 +8,13 @@
 set -uo pipefail
 source "${BC250_ROOT}/lib/common.sh"
 
-title "03 - Déblocage 8 cœurs CPU"
+title "$(t m03_title)"
 require_root
 require_bc250
 
 if [[ -f "${BC250_ROOT}/logs/bios_flashed.flag" ]]; then
-    log "BIOS modifié détecté. L'unlock 8 cœurs est géré nativement par le BIOS."
-    log "Pensez à vérifier que l'option 'Unlock CPU cores' est activée dans le menu BIOS."
+    log "$(t m03_bios_detected_1)"
+    log "$(t m03_bios_detected_2)"
     exit 0
 fi
 
@@ -26,7 +26,7 @@ apply_unlock() {
     [[ "${CPU_UNLOCK_FORCE_NON_STANDARD_MASK:-0}" == "1" ]] && force_flag=(-f)
 
     if systemctl is-active --quiet cyan-skillfish-governor-smu 2>/dev/null; then
-        log "Arrêt temporaire de cyan-skillfish-governor-smu (requis pour l'écriture SMU)..."
+        log "$(t m03_stop_governor)"
         systemctl stop cyan-skillfish-governor-smu
         RESTART_GOVERNOR=1
     else
@@ -43,20 +43,20 @@ apply_unlock() {
 }
 
 if [[ "${CPU_UNLOCK_8_CORES:-1}" != "1" ]]; then
-    warn "CPU_UNLOCK_8_CORES=0 dans la config, module ignoré."
+    warn "$(t m03_disabled_in_config)"
     exit 0
 fi
 
-log "Tentative de déblocage des cœurs CPU..."
+log "$(t m03_attempt)"
 if apply_unlock; then
-    log "Masque de présence CPU écrit avec succès."
+    log "$(t m03_mask_written)"
 else
-    err "Échec du déblocage. Voir la sortie ci-dessus. Un masque non-standard (≠0x77)"
-    err "suggère un vrai défaut silicium : relire modules/03-cpu-core-unlock avant de forcer."
+    err "$(t m03_unlock_failed_1)"
+    err "$(t m03_unlock_failed_2)"
     exit 1
 fi
 
-if confirm "Installer le service systemd de persistance (réappliqué à chaque boot) ?"; then
+if confirm "$(t m03_install_service_q)"; then
     # Même condition stricte que apply_unlock() : ${VAR:+-f} se déclencherait
     # à tort dès que la variable est définie (même à "0"), ce qui forcerait
     # -f à chaque boot sur la config par défaut (CPU_UNLOCK_FORCE_NON_STANDARD_MASK=0
@@ -80,12 +80,12 @@ WantedBy=multi-user.target
 EOF
     systemctl daemon-reload
     systemctl enable bc250-core-unlock.service
-    log "Service bc250-core-unlock.service installé et activé."
-    warn "Le déblocage prend effet APRÈS un reboot (l'écriture SMU n'active les cœurs qu'au prochain boot)."
+    log "$(t m03_service_installed)"
+    warn "$(t m03_takes_effect_after_reboot)"
 else
-    warn "Persistance non installée : relancez ce module après chaque coupure totale d'alimentation."
+    warn "$(t m03_no_persistence)"
 fi
 
-if confirm "Redémarrer maintenant pour activer les 8 cœurs ?"; then
+if confirm "$(t m03_reboot_q)"; then
     reboot
 fi

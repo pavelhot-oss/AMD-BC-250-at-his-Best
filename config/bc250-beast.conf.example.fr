@@ -9,6 +9,17 @@
 # ⚠️  Ne dépassez JAMAIS 1300 mV de Vid CPU (risque réel de destruction du CPU).
 # ⚠️  Validez toujours par un stress test complet avant de considérer un
 #     réglage comme stable (voir modules/05-cpu-overclock).
+#
+# Version anglaise de ce fichier : bc250-beast.conf.example
+# (mêmes variables, mêmes valeurs — seuls les commentaires diffèrent).
+
+# ============================================================
+# 0) Langue de l'interface
+# ============================================================
+# "en" (English) ou "fr" (Français). Laisser vide pour auto-détecter depuis
+# la locale de la session ($LANG). Écrasé par --lang / BC250_LANG. L'entrée
+# "l)" du menu interactif permet aussi de choisir et d'enregistrer cette valeur.
+UI_LANG=""
 
 # ============================================================
 # 1) CPU — overclock / undervolt (bc250_smu_oc)

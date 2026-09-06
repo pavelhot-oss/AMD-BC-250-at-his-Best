@@ -3,16 +3,16 @@
 set -uo pipefail
 source "${BC250_ROOT}/lib/common.sh"
 
-title "00 - Vérifications préalables"
+title "$(t m00_title)"
 
 # Guide Old Lamer, étape 1 : confirmer boot de test (alim + clavier + DisplayPort) + BIOS
 if [[ "${DRY_RUN:-0}" == "1" || "${BC250_YES:-0}" == "1" || "${BC250_FORCE:-0}" == "1" ]]; then
-    log "[DRY-RUN] Question boot de test : avez-vous effectué un boot de test (alim + clavier + DisplayPort) et confirmé l'accès au BIOS avant de continuer ?"
+    log "$(t m00_dry_test_boot "$(t m00_q_test_boot)")"
 else
-    if ! confirm "Avez-vous effectué un boot de test (alim + clavier + DisplayPort) et confirmé l'accès au BIOS avant de continuer ?"; then
-        warn "Fortement recommandé avant toute modification."
-        if ! confirm "Continuer quand même ?"; then
-            die "Arrêt sur demande utilisateur. Effectuez le boot de test puis relancez."
+    if ! confirm "$(t m00_q_test_boot)"; then
+        warn "$(t m00_strongly_recommended)"
+        if ! confirm "$(t common_continue_anyway_q)"; then
+            die "$(t m00_abort_user)"
         fi
     fi
 fi
@@ -20,16 +20,16 @@ fi
 require_bc250
 
 DISTRO="$(detect_distro)"
-log "Distribution détectée : $DISTRO"
+log "$(t m00_distro_detected "$DISTRO")"
 
 case "$DISTRO" in
     unknown)
-        warn "Distribution non reconnue automatiquement. Les modules pourront échouer sur les étapes d'installation de paquets."
+        warn "$(t m00_distro_unknown)"
         ;;
 esac
 
-log "Noyau : $(uname -r)"
-log "CPU  : $(lscpu 2>/dev/null | awk -F: '/Model name/{print $2}' | xargs)"
+log "$(t m00_kernel "$(uname -r)")"
+log "$(t m00_cpu "$(lscpu 2>/dev/null | awk -F: '/Model name/{print $2}' | xargs)")"
 
 MISSING=()
 for bin in git curl lspci python3; do
@@ -37,8 +37,8 @@ for bin in git curl lspci python3; do
 done
 
 if [[ ${#MISSING[@]} -gt 0 ]]; then
-    warn "Outils manquants : ${MISSING[*]}"
-    if confirm "Installer les dépendances de base maintenant ?"; then
+    warn "$(t m00_missing_tools "${MISSING[*]}")"
+    if confirm "$(t m00_install_deps_q)"; then
         require_root
         case "$DISTRO" in
             bazzite-ostree|fedora-ostree) pkg_install git curl pciutils python3 ;;
@@ -48,8 +48,8 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
         esac
     fi
 else
-    log "Toutes les dépendances de base sont présentes."
+    log "$(t m00_deps_ok)"
 fi
 
 maybe_prompt_reboot
-log "Preflight terminé."
+log "$(t m00_done)"

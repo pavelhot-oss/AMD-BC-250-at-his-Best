@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# config/bc250-beast.conf
+#
+# Copy this file to "bc250-beast.conf" (done automatically on first run)
+# and adjust the values to YOUR card, YOUR cooling and YOUR power supply.
+# Every chip is different: these defaults are the generic "sweet spots"
+# reported by Old Lamer, not a guarantee.
+#
+# ⚠️  NEVER exceed 1300 mV of CPU Vid (real risk of destroying the CPU).
+# ⚠️  Always validate with a full stress test before considering a setting
+#     stable (see modules/05-cpu-overclock).
+#
+# French version of this file: bc250-beast.conf.example.fr
+# (same variables, same values — only the comments differ).
+
+# ============================================================
+# 0) Interface language
+# ============================================================
+# "en" (English) or "fr" (Français). Leave empty to auto-detect from the
+# session locale ($LANG). Overridden by --lang / BC250_LANG. The "l)" entry
+# of the interactive menu can also set and save this value.
+UI_LANG=""
+
+# ============================================================
+# 1) CPU — overclock / undervolt (bc250_smu_oc)
+# ============================================================
+# Target frequency in MHz. Generic reported sweet spot: 3850 MHz.
+CPU_FREQ_MHZ=3850
+
+# Target voltage in mV. Generic reported sweet spot: 1150-1160 mV.
+# A stock-frequency (3500 MHz) undervolt is possible around 1000 mV.
+CPU_VID_MV=1150
+
+# CPU/GPU temperature limit in °C (90°C recommended, 100°C = stock)
+CPU_TEMP_LIMIT_C=90
+
+# Duration of the validation stress test (seconds). 300s = 5 min recommended.
+CPU_STRESS_SECONDS=300
+
+# ============================================================
+# 2) GPU — Compute Unit unlock (bc250-cu-live-manager)
+# ============================================================
+# "full"    -> full 40 CU unlock (recommended if all WGPs are healthy)
+# "factory" -> stay on the original 24 CU
+# "custom"  -> use GPU_CU_DISABLE_LIST below to mask defective WGPs
+GPU_CU_MODE="full"
+
+# WGPs to exclude, in SE.SH.WGP format, comma-separated.
+# Example if the card has a defective pair at SE1/SH0/WGP3 (gives 38 CU):
+#   GPU_CU_DISABLE_LIST="1.0.3"
+GPU_CU_DISABLE_LIST=""
+
+# ============================================================
+# 3) GPU — overclock (cyan-skillfish governor)
+# ============================================================
+# --- GPU OVERCLOCK (Governor Cyan-Skillfish) ---
+# Target temperature before progressive throttling (default: 85°C)
+GPU_TEMP_TARGET_C=85
+# Target GPU voltage (optional, leave empty to use the governor's default)
+# GPU_VOLT_MV=
+
+# Target GPU frequency in MHz. "Easy" step 2000 MHz, reported watercooling
+# sweet spot ~2400 MHz. Without watercooling, stay conservative
+# (2200-2400 MHz max).
+GPU_FREQ_MHZ=2000
+
+# Target GPU voltage in mV (leave empty "" to use the governor's default
+# curve)
+GPU_VOLT_MV=""
+
+# ============================================================
+# 4) CPU — extra cores (6c/12t -> 8c/16t)
+# ============================================================
+# Enables the unlock of the 2 hidden CPU cores at every boot (volatile,
+# does not survive a cold boot -> re-applied automatically by the systemd
+# service installed by module 03).
+CPU_UNLOCK_8_CORES=1
+
+# If your card shows a core presence mask other than 0x77, it is probably
+# a genuine silicon defect. Do NOT force without knowing what you're doing.
+CPU_UNLOCK_FORCE_NON_STANDARD_MASK=0
+
+# ============================================================
+# 5) System — memory / stability (zswap)
+# ============================================================
+ENABLE_ZSWAP=1
+ZSWAP_MAX_POOL_PERCENT=25
+ZSWAP_COMPRESSOR="lz4"
+SWAPFILE_SIZE_GB=32
+SWAPPINESS=120
+
+# ============================================================
+# 6) System — CPU mitigations (Spectre/Meltdown)
+# ============================================================
+# Disabling them gives a few % more FPS but reduces protection against
+# some classes of local attacks. Dedicated gaming machine = fine for most
+# people, but it is a choice to make consciously.
+DISABLE_CPU_MITIGATIONS=1
+
+# ============================================================
+# 7) Monitoring
+# ============================================================
+INSTALL_MANGOHUD=1
+
+# ============================================================
+# 8) BIOS VRAM (reminder — CANNOT be automated from software)
+# ============================================================
+# The 8GB -> 512MB VRAM switch is done INSIDE the modified BIOS after the
+# flash (see modules/02-bios-uefi). This field is only a reminder shown by
+# the script, it changes nothing automatically.
+BIOS_TARGET_VRAM_MB=512
