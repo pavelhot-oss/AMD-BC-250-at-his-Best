@@ -14,11 +14,11 @@ source "${BC250_ROOT}/lib/common.sh"
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --lang)
-            [[ -n "${2:-}" ]] || die "$(t inst_lang_needs_arg)"
-            i18n_set "$2" || die "$(t i18n_invalid "$2")"
+            [[ -n "${2:-}" ]] || die "$(t inst_lang_needs_arg "$(i18n_supported)")"
+            i18n_set "$2" || die "$(t i18n_invalid "$2" "$(i18n_supported)")"
             shift ;;
         --lang=*)
-            i18n_set "${1#--lang=}" || die "$(t i18n_invalid "${1#--lang=}")" ;;
+            i18n_set "${1#--lang=}" || die "$(t i18n_invalid "${1#--lang=}" "$(i18n_supported)")" ;;
         -h|--help) t uninst_usage; exit 0 ;;
         *)         die "$(t inst_unknown_arg "$1")" ;;
     esac
@@ -33,7 +33,7 @@ if [[ -f "${BC250_ROOT}/config/bc250-beast.conf" ]]; then
     # shellcheck disable=SC1091
     source "${BC250_ROOT}/config/bc250-beast.conf"
     if [[ "$I18N_EXPLICIT" == "0" && -n "${UI_LANG:-}" ]]; then
-        i18n_load "$UI_LANG" || warn "$(t i18n_invalid "$UI_LANG")"
+        i18n_load "$UI_LANG" || warn "$(t i18n_invalid "$UI_LANG" "$(i18n_supported)")"
     fi
 fi
 

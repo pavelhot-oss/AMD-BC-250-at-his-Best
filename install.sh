@@ -101,7 +101,7 @@ interactive_menu() {
         banner
         echo
         t inst_menu_config "$CONFIG_FILE"
-        t inst_menu_lang "$I18N_LANG"
+        t inst_menu_lang "$(i18n_lang_name "$I18N_LANG") (${I18N_LANG})"
         echo
         local i=0
         for id in "${MODULES[@]}"; do
@@ -159,11 +159,11 @@ while [[ $# -gt 0 ]]; do
         --yes)        BC250_YES=1 ;;
         --force)      BC250_FORCE=1 ;;
         --lang)
-            [[ -n "${2:-}" ]] || die "$(t inst_lang_needs_arg)"
-            i18n_set "$2" || die "$(t i18n_invalid "$2")"
+            [[ -n "${2:-}" ]] || die "$(t inst_lang_needs_arg "$(i18n_supported)")"
+            i18n_set "$2" || die "$(t i18n_invalid "$2" "$(i18n_supported)")"
             shift ;;
         --lang=*)
-            i18n_set "${1#--lang=}" || die "$(t i18n_invalid "${1#--lang=}")" ;;
+            i18n_set "${1#--lang=}" || die "$(t i18n_invalid "${1#--lang=}" "$(i18n_supported)")" ;;
         -h|--help)    usage; exit 0 ;;
         *)            die "$(t inst_unknown_arg "$1")" ;;
     esac
@@ -189,7 +189,7 @@ load_config
 if [[ "$FIRST_RUN_LANG_CHOSEN" == "1" ]]; then
     i18n_save_to_config "$I18N_LANG" && log "$(t i18n_saved "$I18N_LANG")"
 elif [[ "$I18N_EXPLICIT" == "0" && -n "${UI_LANG:-}" ]]; then
-    i18n_load "$UI_LANG" || warn "$(t i18n_invalid "$UI_LANG")"
+    i18n_load "$UI_LANG" || warn "$(t i18n_invalid "$UI_LANG" "$(i18n_supported)")"
 fi
 # Les modules tournent en sous-processus : la langue leur est transmise
 # par BC250_LANG (exporté par i18n_load).

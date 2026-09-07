@@ -16,8 +16,9 @@ declare -gA MSG   # -g: must stay global when sourced from inside i18n_load()
 # ------------------------------------------------------------------
 # i18n / language selection
 # ------------------------------------------------------------------
-MSG[i18n_invalid]="Unknown language: %s (expected: en|fr)"
-MSG[i18n_switched]="Language: %s"
+MSG[lang_name]="English"
+MSG[i18n_invalid]="Unknown language: %s (available: %s)"
+MSG[i18n_switched]="Language: %s (%s)"
 MSG[i18n_save_q]="Save this choice to the config file (%s)?"
 MSG[i18n_saved]="Language saved to the config: %s"
 MSG[i18n_save_failed]="Could not save the language (config file not found: %s)"
@@ -61,8 +62,8 @@ Usage:
   sudo ./install.sh --all           # run all modules in order
   sudo ./install.sh --module 05     # run module 05 only
   sudo ./install.sh --status        # quick diagnostic of the current state
-  sudo ./install.sh --lang en       # UI language: en | fr (also BC250_LANG
-                                    # env var, or UI_LANG in the config file)
+  sudo ./install.sh --lang en       # UI language, one code per file in locale/
+                                    # (also BC250_LANG, or UI_LANG in the config)
   sudo ./install.sh --all --yes     # non-interactive (uses the config values
                                     # without confirming each step — reserve
                                     # this for re-deploying a config already
@@ -112,7 +113,7 @@ MSG[inst_invalid_choice]="Invalid choice."
 MSG[inst_unknown_arg]="Unknown argument: %s (see --help)"
 MSG[inst_module_needs_id]="--module requires an identifier (e.g. 05-cpu-overclock or 05)"
 MSG[inst_no_module_number]="No module matches number %s"
-MSG[inst_lang_needs_arg]="--lang requires a language code (en|fr)"
+MSG[inst_lang_needs_arg]="--lang requires a language code (available: %s)"
 MSG[inst_final_validation_q]="Run the final validation (module 09)?"
 MSG[inst_yes_mode_validation]="--yes mode: running the final validation automatically."
 
@@ -123,7 +124,7 @@ MSG[uninst_usage]="uninstall.sh — removes the PERSISTENT changes installed by 
 Does not touch the flashed BIOS (module 02) nor the cooling/wiring (module 01).
 
 Usage:
-  sudo ./uninstall.sh [--lang en|fr]"
+  sudo ./uninstall.sh [--lang <code>]"
 MSG[uninst_title]="Uninstalling bc250-beast persistent changes"
 MSG[uninst_rm_core_unlock]="Removing the bc250-core-unlock service..."
 MSG[uninst_disable_smu_oc]="Disabling the bc250-smu-oc service (CPU OC setting)..."

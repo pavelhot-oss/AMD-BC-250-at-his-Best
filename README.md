@@ -64,35 +64,54 @@ sudo ./install.sh --lang fr             # force the interface language (en|fr)
 
 ## Language
 
-Menus, prompts, log lines and the validation report are available in
-English and French. The language is resolved in this order, first match
-wins:
+Menus, prompts, log lines and the validation report are translated. One
+catalog per language lives in `locale/`, and the file list *is* the list
+of available languages:
 
-1. `--lang en|fr` on the command line (`install.sh` and `uninstall.sh`)
-2. the `BC250_LANG` environment variable (`sudo BC250_LANG=fr ./install.sh`)
+| Code | Language | Status |
+|---|---|---|
+| `en` | English | reference |
+| `fr` | Français | written by the upstream author |
+| `de` | Deutsch | machine-drafted, needs a native review |
+| `es` | Español | machine-drafted, needs a native review |
+| `pt` | Português (Brasil) | machine-drafted, needs a native review |
+| `ru` | Русский | machine-drafted, needs a native review |
+| `uk` | Українська | machine-drafted, needs a native review |
+
+The language is resolved in this order, first match wins:
+
+1. `--lang <code>` on the command line (`install.sh` and `uninstall.sh`)
+2. the `BC250_LANG` environment variable (`sudo BC250_LANG=de ./install.sh`)
 3. `UI_LANG` in `config/bc250-beast.conf`
-4. the session locale (`LC_ALL` / `LC_MESSAGES` / `LANG` starting with `fr`)
+4. the session locale (`LC_ALL` / `LC_MESSAGES` / `LANG`: `pt_BR.UTF-8`
+   tries `pt_br`, then `pt`)
 5. English
 
-The `l)` entry of the interactive menu switches language at any time and
-offers to save the choice to the config file. The two config examples
-(`bc250-beast.conf.example` in English, `bc250-beast.conf.example.fr` in
-French) declare the same variables with the same values; only the comments
-differ.
+On the first interactive run the menu shows every language by its own
+name and saves the answer; the `l)` entry switches at any time. The
+config example copied on first run follows the language when a
+`config/bc250-beast.conf.example.<code>` exists (English and French so
+far; other languages get the English example). All examples declare the
+same variables with the same values.
 
-Every user-facing string lives in `locale/en.sh` and `locale/fr.sh`, one
-`MSG[key]="..."` per message with `%s` for arguments; scripts call
-`t <key> [args]`. After editing a catalog, validate it:
+**Adding a language** takes one file: copy `locale/en.sh` to
+`locale/<code>.sh`, translate every value, set `MSG[lang_name]` to the
+language's own name, and run the validator. The chooser, `--lang`
+validation and locale auto-detection all read the directory, nothing else
+to edit. Catalog format: one `MSG[key]="..."` per message, `%s` for
+arguments in the same order as English, `%%` for a literal percent sign;
+scripts call `t <key> [args]`.
 
 ```bash
 tools/check-i18n.sh
 ```
 
-It checks that both catalogs load through the real runtime path, share the
-same keys with the same number of `%s` placeholders, that every `t <key>`
-call in the scripts refers to an existing key with the right number of
-arguments, that no key is left unused, and that the two config examples
-stay in sync. Untranslated or suspicious entries are reported as warnings.
+The validator checks that every catalog loads through the real runtime
+path, shares the English key set with the same number of `%s`
+placeholders, that every `t <key>` call in the scripts refers to an
+existing key with the right number of arguments, that no key is left
+unused, and that the config examples stay in sync. Untranslated or
+suspicious entries are reported as warnings.
 
 ## Supported distributions
 
@@ -127,7 +146,7 @@ bc250-beast/
 │   └── bc250-beast.conf.example.fr   # same values, French comments
 ├── lib/common.sh            # hardware/distro detection, logging, helpers
 ├── lib/i18n.sh              # message lookup (t <key>) and language selection
-├── locale/                  # en.sh / fr.sh message catalogs
+├── locale/                  # one message catalog per language (en, fr, de, es, pt, ru, uk)
 ├── tools/check-i18n.sh      # catalog validator (keys, placeholders, call sites)
 ├── modules/                 # one folder per step, see table above
 ├── vendor/                  # community tools' source code, as git submodules

@@ -1,50 +1,88 @@
 #!/usr/bin/env bash
-# lib/i18n.sh — minimal message catalog for bc250-beast (en / fr).
+# lib/i18n.sh — minimal message catalog for bc250-beast.
 # Sourced by lib/common.sh, do not execute directly.
 #
 # Usage in scripts:
 #   t <key> [printf args...]     prints the translated string + newline
 #   "$(t <key> ...)"             same, without the trailing newline
 #
-# Catalogs live in locale/<lang>.sh as   MSG[key]="..."   lines.
+# Catalogs live in locale/<code>.sh as   MSG[key]="..."   lines, one file
+# per language, the file name being the code (en, fr, de, pt, ...). The
+# list of available languages IS the list of files: to add a language,
+# copy locale/en.sh to locale/<code>.sh, translate every value, set
+# MSG[lang_name] to the language's own name, and run tools/check-i18n.sh.
+# Nothing else needs editing: the chooser, --lang validation and locale
+# auto-detection all read the directory.
+#
 # English is always loaded first as the fallback, then the selected
-# language overlays it, so a key missing from fr.sh shows up in English
-# instead of breaking. Values are printf formats: use %s for arguments
-# and %% for a literal percent sign.
+# language overlays it, so a key missing from a catalog shows up in
+# English instead of breaking. Values are printf formats: use %s for
+# arguments and %% for a literal percent sign.
 #
 # Language resolution (first match wins):
 #   1. --lang <code> on the command line (install.sh / uninstall.sh)
 #   2. BC250_LANG environment variable
 #   3. UI_LANG in config/bc250-beast.conf
-#   4. LC_ALL / LC_MESSAGES / LANG of the current session
+#   4. LC_ALL / LC_MESSAGES / LANG of the current session (pt_BR -> pt_br
+#      if that file exists, else pt, else English)
 #   5. English
-#
-# Run tools/check-i18n.sh to validate the catalogs against the scripts.
 
-I18N_SUPPORTED="en fr"
 I18N_DEFAULT="en"
 I18N_LANG=""
 I18N_EXPLICIT=0          # 1 when the language came from --lang / BC250_LANG
 declare -gA MSG=()
 
-i18n_is_supported() { [[ " ${I18N_SUPPORTED} " == *" ${1:-} "* ]]; }
+# A code is valid when it is a plain lowercase token and its file exists
+# (the pattern also keeps --lang from reaching outside locale/).
+i18n_is_supported() {
+    [[ "${1:-}" =~ ^[a-z]{2,3}(_[a-z0-9]+)?$ ]] && [[ -f "${BC250_ROOT}/locale/${1}.sh" ]]
+}
 
-# Guess the language from the session locale. Anything that is not French
-# falls back to English (the project's primary language).
+# Space-separated codes: English first, then the rest alphabetically.
+i18n_supported() {
+    local f code codes=()
+    for f in "${BC250_ROOT}"/locale/*.sh; do
+        [[ -f "$f" ]] || continue
+        code="${f##*/}"; code="${code%.sh}"
+        [[ "$code" == "$I18N_DEFAULT" ]] && continue
+        i18n_is_supported "$code" && codes+=("$code")
+    done
+    printf '%s' "$I18N_DEFAULT"
+    (( ${#codes[@]} )) && printf ' %s' "${codes[@]}"
+    echo
+}
+
+# The language's own name, read from its catalog (falls back to the code).
+i18n_lang_name() {
+    local code="${1:-}" name=""
+    if [[ "$code" == "$I18N_LANG" && -n "${MSG[lang_name]+x}" ]]; then
+        name="${MSG[lang_name]}"
+    elif i18n_is_supported "$code"; then
+        name="$(bash -c 'source "$1" 2>/dev/null && printf "%s" "${MSG[lang_name]-}"' _ "${BC250_ROOT}/locale/${code}.sh" 2>/dev/null)"
+    fi
+    printf '%s' "${name:-$code}"
+}
+
+# Guess the language from the session locale: try the full code (pt_br),
+# then the short one (pt), else English.
 i18n_detect() {
     local l="${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}"
-    case "${l,,}" in
-        fr*) echo "fr" ;;
-        *)   echo "${I18N_DEFAULT}" ;;
-    esac
+    l="${l%%.*}"; l="${l%%@*}"; l="${l,,}"
+    local short="${l%%_*}"
+    if i18n_is_supported "$l"; then
+        echo "$l"
+    elif i18n_is_supported "$short"; then
+        echo "$short"
+    else
+        echo "${I18N_DEFAULT}"
+    fi
 }
 
 # Load a catalog. Returns 1 (and leaves the current catalog alone) if the
-# language is unknown or its file is missing.
+# code is unknown.
 i18n_load() {
     local lang="${1:-}"
     i18n_is_supported "$lang" || return 1
-    [[ -f "${BC250_ROOT}/locale/${lang}.sh" ]] || return 1
     MSG=()
     # shellcheck disable=SC1091
     source "${BC250_ROOT}/locale/${I18N_DEFAULT}.sh"
@@ -74,7 +112,7 @@ i18n_init() {
     fi
     if ! i18n_load "$lang"; then
         i18n_load "${I18N_DEFAULT}"
-        warn "$(t i18n_invalid "$lang")"
+        warn "$(t i18n_invalid "$lang" "$(i18n_supported)")"
     fi
 }
 
@@ -92,21 +130,23 @@ t() {
     printf -- "${fmt}\n" "$@"
 }
 
-# Interactive chooser, deliberately bilingual since we don't know the
-# user's language yet. Returns 1 if no valid choice was made.
+# Interactive chooser built from the catalogs on disk, showing each
+# language's own name so it is readable before any language is chosen.
+# Returns 1 if no valid choice was made.
 i18n_prompt_language() {
-    local choice
+    local codes=() code i=0 choice
+    read -ra codes <<< "$(i18n_supported)"
     echo
-    echo "  1) English"
-    echo "  2) Français"
+    for code in "${codes[@]}"; do
+        i=$((i+1))
+        printf '  %d) %s (%s)\n' "$i" "$(i18n_lang_name "$code")" "$code"
+    done
     echo
-    read -rp "Language / Langue [1-2]: " choice
-    case "$choice" in
-        1) i18n_set en ;;
-        2) i18n_set fr ;;
-        *) return 1 ;;
-    esac
-    log "$(t i18n_switched "$I18N_LANG")"
+    read -rp "Language [1-${#codes[@]}]: " choice
+    [[ "$choice" =~ ^[0-9]+$ ]] || return 1
+    (( choice >= 1 && choice <= ${#codes[@]} )) || return 1
+    i18n_set "${codes[$((choice-1))]}" || return 1
+    log "$(t i18n_switched "$(i18n_lang_name "$I18N_LANG")" "$I18N_LANG")"
 }
 
 # Persist the choice as UI_LANG="xx" in the config file (created if the
@@ -119,7 +159,7 @@ i18n_save_to_config() {
     else
         {
             echo
-            echo "# Interface language / Langue de l'interface (en|fr)"
+            echo "# Interface language: a code matching a file in locale/ (en, fr, ...)"
             echo "UI_LANG=\"${lang}\""
         } >> "$file"
     fi

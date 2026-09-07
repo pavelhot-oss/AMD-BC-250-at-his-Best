@@ -65,35 +65,53 @@ sudo ./install.sh --lang fr             # force la langue de l'interface (en|fr)
 
 ## Langue
 
-Menus, questions, lignes de log et rapport de validation existent en
-anglais et en français. La langue est déterminée dans cet ordre, le premier
-qui correspond l'emporte :
+Menus, questions, lignes de log et rapport de validation sont traduits.
+Un catalogue par langue dans `locale/`, et la liste des fichiers *est* la
+liste des langues disponibles :
 
-1. `--lang en|fr` sur la ligne de commande (`install.sh` et `uninstall.sh`)
-2. la variable d'environnement `BC250_LANG` (`sudo BC250_LANG=fr ./install.sh`)
+| Code | Langue | Statut |
+|---|---|---|
+| `en` | English | référence |
+| `fr` | Français | écrit par l'auteur d'origine |
+| `de` | Deutsch | brouillon automatique, à relire par un natif |
+| `es` | Español | brouillon automatique, à relire par un natif |
+| `pt` | Português (Brasil) | brouillon automatique, à relire par un natif |
+| `ru` | Русский | brouillon automatique, à relire par un natif |
+| `uk` | Українська | brouillon automatique, à relire par un natif |
+
+La langue est déterminée dans cet ordre, le premier qui correspond
+l'emporte :
+
+1. `--lang <code>` sur la ligne de commande (`install.sh` et `uninstall.sh`)
+2. la variable d'environnement `BC250_LANG` (`sudo BC250_LANG=de ./install.sh`)
 3. `UI_LANG` dans `config/bc250-beast.conf`
-4. la locale de la session (`LC_ALL` / `LC_MESSAGES` / `LANG` commençant par `fr`)
+4. la locale de la session (`LC_ALL` / `LC_MESSAGES` / `LANG` :
+   `pt_BR.UTF-8` essaie `pt_br`, puis `pt`)
 5. anglais
 
-L'entrée `l)` du menu interactif change de langue à tout moment et propose
-d'enregistrer le choix dans la config. Les deux exemples de config
-(`bc250-beast.conf.example` en anglais, `bc250-beast.conf.example.fr` en
-français) déclarent les mêmes variables avec les mêmes valeurs ; seuls les
-commentaires diffèrent.
+Au premier lancement interactif, le menu affiche chaque langue dans sa
+propre langue et enregistre la réponse ; l'entrée `l)` permet de changer à
+tout moment. L'exemple de config copié au premier lancement suit la langue
+quand un `config/bc250-beast.conf.example.<code>` existe (anglais et
+français pour l'instant ; les autres langues reçoivent l'exemple anglais).
+Tous les exemples déclarent les mêmes variables avec les mêmes valeurs.
 
-Tous les textes affichés sont dans `locale/en.sh` et `locale/fr.sh`, une
-ligne `MSG[cle]="..."` par message avec `%s` pour les arguments ; les
-scripts appellent `t <cle> [args]`. Après modification d'un catalogue,
-validez-le :
+**Ajouter une langue** tient en un fichier : copiez `locale/en.sh` vers
+`locale/<code>.sh`, traduisez chaque valeur, renseignez `MSG[lang_name]`
+avec le nom de la langue dans cette langue, et lancez le validateur. Le
+sélecteur, la validation de `--lang` et l'auto-détection lisent le
+répertoire, rien d'autre à modifier. Format : une ligne `MSG[cle]="..."`
+par message, `%s` pour les arguments dans le même ordre qu'en anglais,
+`%%` pour un pourcent littéral ; les scripts appellent `t <cle> [args]`.
 
 ```bash
 tools/check-i18n.sh
 ```
 
-Il vérifie que les deux catalogues se chargent par le vrai chemin
-d'exécution, ont les mêmes clés avec le même nombre de `%s`, que chaque
-appel `t <cle>` des scripts vise une clé existante avec le bon nombre
-d'arguments, qu'aucune clé n'est orpheline, et que les deux exemples de
+Le validateur vérifie que chaque catalogue se charge par le vrai chemin
+d'exécution, a les mêmes clés que l'anglais avec le même nombre de `%s`,
+que chaque appel `t <cle>` des scripts vise une clé existante avec le bon
+nombre d'arguments, qu'aucune clé n'est orpheline, et que les exemples de
 config restent synchronisés. Les entrées non traduites ou suspectes sont
 signalées en avertissement.
 
@@ -128,7 +146,7 @@ bc250-beast/
 │   └── bc250-beast.conf.example.fr   # mêmes valeurs, commentaires en français
 ├── lib/common.sh            # détection matériel/distro, logging, helpers
 ├── lib/i18n.sh              # recherche des messages (t <cle>) et choix de langue
-├── locale/                  # catalogues de messages en.sh / fr.sh
+├── locale/                  # un catalogue de messages par langue (en, fr, de, es, pt, ru, uk)
 ├── tools/check-i18n.sh      # validateur des catalogues (clés, %s, appels)
 ├── modules/                 # un dossier par étape, voir tableau ci-dessus
 ├── vendor/                  # code source des outils communautaires, en sous-modules git

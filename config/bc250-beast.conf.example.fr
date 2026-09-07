@@ -16,9 +16,10 @@
 # ============================================================
 # 0) Langue de l'interface
 # ============================================================
-# "en" (English) ou "fr" (Français). Laisser vide pour auto-détecter depuis
-# la locale de la session ($LANG). Écrasé par --lang / BC250_LANG. L'entrée
-# "l)" du menu interactif permet aussi de choisir et d'enregistrer cette valeur.
+# Un code correspondant à un catalogue de locale/ ("en", "fr", "de", ...).
+# Laisser vide pour auto-détecter depuis la locale de la session ($LANG).
+# Écrasé par --lang / BC250_LANG. L'entrée "l)" du menu interactif permet
+# aussi de choisir et d'enregistrer cette valeur.
 UI_LANG=""
 
 # ============================================================

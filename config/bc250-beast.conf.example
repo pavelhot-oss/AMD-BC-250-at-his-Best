@@ -16,9 +16,10 @@
 # ============================================================
 # 0) Interface language
 # ============================================================
-# "en" (English) or "fr" (Français). Leave empty to auto-detect from the
-# session locale ($LANG). Overridden by --lang / BC250_LANG. The "l)" entry
-# of the interactive menu can also set and save this value.
+# A code matching a catalog file in locale/ ("en", "fr", "de", ...). Leave
+# empty to auto-detect from the session locale ($LANG). Overridden by
+# --lang / BC250_LANG. The "l)" entry of the interactive menu can also set
+# and save this value.
 UI_LANG=""
 
 # ============================================================

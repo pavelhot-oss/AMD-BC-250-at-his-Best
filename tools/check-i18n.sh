@@ -36,7 +36,7 @@ info() { (( QUIET )) || printf '\033[0;36m==\033[0m %s\n' "$*"; }
 ok()   { (( QUIET )) || printf '  \033[0;32m[ok]\033[0m %s\n' "$*"; }
 
 # Keys whose value is legitimately the same in every language.
-SAME_OK_REGEX='^(m09_title|m09_score_excellent|inst_menu_lang_opt|m08_lbl_discord|m08_lbl_telegram|m08_lbl_smp|m09_t_service|m09_t_vram|m09_t_cpu_cores|m09_report_title|inst_status_threads|inst_status_zswap|m00_cpu)$'
+SAME_OK_REGEX='^(common_yn|common_yes_regex|m00_kernel|inst_status_distro|m06_dry_build|m09_title|m09_score_excellent|inst_menu_lang_opt|m08_lbl_discord|m08_lbl_telegram|m08_lbl_smp|m09_t_service|m09_t_vram|m09_t_cpu_cores|m09_report_title|inst_status_threads|inst_status_zswap|m00_cpu)$'
 
 # Scripts that may call t(): everything except the catalogs, this tool and vendor/
 mapfile -t SCRIPTS < <(cd "$ROOT" && find . -path ./vendor -prune -o -path ./.git -prune -o -path ./locale -prune -o -path ./tools -prune -o -name '*.sh' -print | sort)
@@ -185,6 +185,13 @@ for s in "${SCRIPTS[@]}"; do
     done < <(grep -nE "$CALL_RE" "$f")
 done
 (( multiline_note )) && info "note: ${multiline_note} multi-line call site(s) skipped for E7"
+
+# lang_name is read directly by i18n_lang_name(), not through t(); every
+# catalog must define it (the chooser shows it).
+USED[lang_name]=1
+for lang in "${LANGS[@]}"; do
+    [[ -n "${VAL[${lang}|lang_name]-}" ]] || err "E2 ${lang}.sh: MSG[lang_name] missing or empty (shown by the language chooser)"
+done
 
 # Keys built dynamically: mod_<NN>_desc via module_desc() in install.sh
 for id in $(cd "$ROOT/modules" && ls -d [0-9][0-9]-* 2>/dev/null); do
