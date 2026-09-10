@@ -30,10 +30,10 @@ DISTRO="$(detect_distro)"
 
 log "$(t m05_install_stress)"
 case "$DISTRO" in
-    bazzite-ostree|fedora-ostree) pkg_install stress-ng ;;
-    fedora)                       pkg_install stress-ng ;;
-    arch)                         pkg_install stress-ng ;;
-    debian)                       pkg_install stress-ng ;;
+    bazzite-ostree|fedora-ostree) pkg_install stress-ng stress ;;
+    fedora)                       pkg_install stress-ng stress ;;
+    arch)                         pkg_install stress-ng stress ;;
+    debian)                       pkg_install stress-ng stress ;;
 esac
 maybe_prompt_reboot
 
@@ -70,7 +70,17 @@ cd "$WORKDIR"
 confirm "$(t m05_apply_q "$TARGET_FREQ" "$TARGET_VID")" || exit 1
 
 log "$(t m05_applying "$TARGET_FREQ" "$TARGET_VID" "$TEMP_LIMIT")"
-bc250-detect --frequency "$TARGET_FREQ" --vid "$TARGET_VID" --temp "$TEMP_LIMIT" --keep -c overclock.conf
+if ! bc250-detect --frequency "$TARGET_FREQ" --vid "$TARGET_VID" --temp "$TEMP_LIMIT" --keep -c overclock.conf; then
+    warn "$(t m05_detect_failed)"
+    revert_to_stock
+    exit 1
+fi
+
+if [[ ! -s "${WORKDIR}/overclock.conf" ]]; then
+    warn "$(t m05_config_missing)"
+    revert_to_stock
+    exit 1
+fi
 
 NPROC="$(nproc)"
 if (( NPROC < 16 )); then
@@ -86,8 +96,19 @@ fi
 
 echo
 if confirm "$(t m05_stable_q)"; then
-    bc250-apply --install "${WORKDIR}/overclock.conf"
-    systemctl enable --now bc250-smu-oc
+    if ! bc250-apply --install "${WORKDIR}/overclock.conf"; then
+        warn "$(t m05_apply_install_failed)"
+        exit 1
+    fi
+    if [[ ! -f /etc/systemd/system/bc250-smu-oc.service ]]; then
+        warn "$(t m05_service_missing)"
+        exit 1
+    fi
+    systemctl daemon-reload
+    if ! systemctl enable --now bc250-smu-oc; then
+        warn "$(t m05_service_enable_failed)"
+        exit 1
+    fi
     log "$(t m05_service_enabled "$TARGET_FREQ" "$TARGET_VID")"
 else
     warn "$(t m05_not_permanent)"
