@@ -323,43 +323,40 @@ MSG[m06_dry_build]="[DRY-RUN] cargo build --release em %s"
 MSG[m06_building]="Compilando o governor (cargo build --release)..."
 MSG[m06_build_failed]="cargo build falhou. Verifique os erros acima."
 MSG[m06_build_ok]="Build concluído com sucesso. Binário: %s"
-MSG[m06_follow_readme]="
-⚠️  O binário foi compilado. Siga o README do repositório para a
-    instalação exata (serviço systemd, caminhos), que pode mudar com o
-    tempo:
-        %s/README.md
-    Depois que o binário/serviço forem instalados pelo próprio
-    repositório, volte aqui para a configuração.
-"
-MSG[m06_installed_q]="O governor está instalado (binário + serviço systemd presentes)? Continuar com a configuração?"
-MSG[m06_config_postponed]="Configuração adiada. Execute este módulo novamente quando a instalação do governor estiver concluída."
+MSG[m06_follow_readme]="Instalação a partir de %s:
+    binário, política D-Bus, wrapper performance-mode e
+    o serviço systemd cyan-skillfish-governor-smu.
+O serviço inicia imediatamente (sem necessidade de reiniciar)."
+MSG[m06_installed_q]="Instalar o governor (binário + serviço systemd) e aplicar o ajuste abaixo?"
+MSG[m06_config_postponed]="Instalação ignorada. Execute este módulo novamente para instalar e iniciar o governor."
 MSG[m06_generating]="Gerando %s (curva idle -> alvo, temperatura alvo %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] Escrevendo %s:"
 MSG[m06_toml_header]="# Gerado por bc250-beast — módulo 06
 # Os padrões do upstream podem ser instáveis: teste manualmente
 # antes de ativar no boot."
-MSG[m06_toml_no_volt]="# tensão não definida na config -> verifique o valor padrão do governor"
 MSG[m06_file_written]="Arquivo escrito: %s"
-MSG[m06_progression]="
-Progressão recomendada pelo Old Lamer:
+MSG[m06_progression]="Progressão recomendada por Old Lamer:
   1500 MHz (stock) -> 2000 MHz (passo fácil, ~10%%+ no FurMark)
-  -> valide a CPU a 3.85 GHz (módulo 05) -> avance mais com a GPU
-  SOMENTE se a refrigeração acompanhar (water cooler: até ~2.4GHz
-  relatados, ~360W / 30A, daí a importância dos conectores Molex
+  -> validar a CPU em 3,85 GHz (módulo 05) -> forçar mais a GPU
+  SOMENTE se a refrigeração acompanhar (watercooling: até ~2,4 GHz
+  relatado, ~360W / 30A, daí a importância dos conectores Molex
   extras do módulo 01).
 
-⚠️  IMPORTANTE: teste este arquivo de config MANUALMENTE (inicie o
-    serviço em primeiro plano / à mão) antes de ativá-lo no boot.
-    NÃO ative o serviço automaticamente a partir deste script."
-MSG[m06_restart_q]="Reiniciar o serviço do governor agora para aplicar a config testada?"
-MSG[m06_service_name_hint]="O nome exato do serviço pode variar conforme a versão do repo — verifique com 'systemctl list-units | grep -i cyan'."
-MSG[m06_enable_yourself]="Depois de confirmar a estabilidade manualmente, ative a persistência você mesmo com:"
-MSG[m06_upstream_service]="O repositório upstream (branch smu) fornece seu próprio serviço systemd."
-MSG[m06_see_readme]="Veja %s/README.md para o procedimento de instalação exato."
+  IMPORTANTE: após iniciar o serviço, rode uma carga real de GPU
+  (FurMark Vulkan + um jogo) por alguns minutos e confira os logs
+  (journalctl -u cyan-skillfish-governor-smu) antes de confiar."
 
 # ------------------------------------------------------------------
 # Module 07 — system tuning
 # ------------------------------------------------------------------
+MSG[m06_bin_installed]="Binário instalado: %s"
+MSG[m06_perf_installed]="Wrapper performance-mode instalado: %s"
+MSG[m06_dbus_installed]="Política D-Bus instalada: %s"
+MSG[m06_service_installed]="Serviço systemd instalado: %s"
+MSG[m06_started]="O serviço do governor está ativo."
+MSG[m06_start_failed]="O serviço do governor não iniciou corretamente. Inspecione o serviço:"
+MSG[m06_enable_boot_q]="Ativar o serviço do governor na inicialização (reaplica o OC a cada boot)?"
+MSG[m06_enabled]="Serviço ativado na inicialização."
 MSG[m07_title]="07 - Ajustes do sistema (zswap / mitigações / MangoHud)"
 MSG[m07_zswap_ostree]="Ativando zswap + mitigations=off via kernel args (rpm-ostree)..."
 MSG[m07_dry_reboot]="[DRY-RUN] Seria necessário reiniciar (sistema imutável rpm-ostree)."

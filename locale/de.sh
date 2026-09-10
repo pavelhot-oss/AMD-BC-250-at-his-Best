@@ -324,43 +324,40 @@ MSG[m06_dry_build]="[DRY-RUN] cargo build --release in %s"
 MSG[m06_building]="Governor wird gebaut (cargo build --release)..."
 MSG[m06_build_failed]="cargo build fehlgeschlagen. Prüfen Sie die Fehler oben."
 MSG[m06_build_ok]="Build erfolgreich. Binary: %s"
-MSG[m06_follow_readme]="
-⚠️  Das Binary ist gebaut. Für die genaue Installation (systemd-Dienst,
-    Pfade) dem README des Repositorys folgen, da sich diese im Laufe der
-    Zeit ändern kann:
-        %s/README.md
-    Sobald Binary/Dienst durch das Repository selbst installiert sind,
-    hierher zurückkehren für die Konfiguration.
-"
-MSG[m06_installed_q]="Ist der Governor installiert (Binary + systemd-Dienst vorhanden)? Mit der Konfiguration fortfahren?"
-MSG[m06_config_postponed]="Konfiguration verschoben. Führen Sie dieses Modul erneut aus, sobald die Installation des Governors abgeschlossen ist."
+MSG[m06_follow_readme]="Installation aus %s:
+    Binary, D-Bus-Richtlinie, Performance-Mode-Wrapper und
+    der systemd-Dienst cyan-skillfish-governor-smu.
+Der Dienst startet sofort (kein Neustart nötig)."
+MSG[m06_installed_q]="Den Governor (Binary + systemd-Dienst) installieren und die Einstellung unten anwenden?"
+MSG[m06_config_postponed]="Installation übersprungen. Führen Sie dieses Modul erneut aus, um den Governor zu installieren und zu starten."
 MSG[m06_generating]="%s wird generiert (Kurve idle -> Ziel, Zieltemperatur %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] %s wird geschrieben:"
 MSG[m06_toml_header]="# Generiert von bc250-beast — Modul 06
 # Upstream-Standardwerte können instabil sein: manuell testen,
 # bevor sie beim Booten aktiviert werden."
-MSG[m06_toml_no_volt]="# Spannung in der Konfiguration nicht gesetzt -> Standardwert des Governors prüfen"
 MSG[m06_file_written]="Datei geschrieben: %s"
-MSG[m06_progression]="
-Von Old Lamer empfohlene Progression:
-  1500 MHz (Standard) -> 2000 MHz (leichter Schritt, ~10%%+ in FurMark)
-  -> CPU bei 3,85 GHz validieren (Modul 05) -> GPU NUR weiter treiben,
-  wenn die Kühlung mithält (Wasserkühlung: bis ~2,4 GHz berichtet,
-  ~360W / 30A, daher die Bedeutung der zusätzlichen Molex-Anschlüsse
+MSG[m06_progression]="Von Old Lamer empfohlene Progression:
+  1500 MHz (Standard) -> 2000 MHz (einfacher Schritt, ~10%%+ in FurMark)
+  -> CPU bei 3,85 GHz validieren (Modul 05) -> GPU weiter pushen
+  NUR wenn die Kühlung mithält (Wasserkühlung: bis ca. 2,4 GHz berichtet,
+  ~360W / 30A, daher die Wichtigkeit der zusätzlichen Molex-Stecker
   aus Modul 01).
 
-⚠️  WICHTIG: Diese Konfigurationsdatei MANUELL testen (Dienst im
-    Vordergrund / von Hand starten), bevor sie beim Booten aktiviert wird.
-    Den Dienst NICHT automatisch aus diesem Skript heraus aktivieren."
-MSG[m06_restart_q]="Den Governor-Dienst jetzt neu starten, um die getestete Konfiguration anzuwenden?"
-MSG[m06_service_name_hint]="Der genaue Dienstname kann je nach Repo-Version abweichen — prüfen mit 'systemctl list-units | grep -i cyan'."
-MSG[m06_enable_yourself]="Sobald die Stabilität manuell bestätigt ist, aktivieren Sie die Persistenz selbst mit:"
-MSG[m06_upstream_service]="Das Upstream-Repo (Branch smu) liefert seinen eigenen systemd-Dienst mit."
-MSG[m06_see_readme]="Siehe %s/README.md für den genauen Installationsablauf."
+  WICHTIG: nach dem Start des Dienstes eine echte GPU-Last laufen lassen
+  (FurMark Vulkan + ein Spiel) für einige Minuten und die Logs prüfen
+  (journalctl -u cyan-skillfish-governor-smu), bevor Sie dem vertrauen."
 
 # ------------------------------------------------------------------
 # Modul 07 — Systemtuning
 # ------------------------------------------------------------------
+MSG[m06_bin_installed]="Binary installiert: %s"
+MSG[m06_perf_installed]="Performance-Mode-Wrapper installiert: %s"
+MSG[m06_dbus_installed]="D-Bus-Richtlinie installiert: %s"
+MSG[m06_service_installed]="systemd-Dienst installiert: %s"
+MSG[m06_started]="Der Governor-Dienst ist aktiv."
+MSG[m06_start_failed]="Der Governor-Dienst startete nicht sauber. Prüfen Sie den Dienst:"
+MSG[m06_enable_boot_q]="Den Governor-Dienst beim Booten aktivieren (wendet das OC bei jedem Start erneut an)?"
+MSG[m06_enabled]="Dienst für den Boot aktiviert."
 MSG[m07_title]="07 - Systemtuning (zswap / Mitigations / MangoHud)"
 MSG[m07_zswap_ostree]="zswap + mitigations=off werden über Kernel-Parameter aktiviert (rpm-ostree)..."
 MSG[m07_dry_reboot]="[DRY-RUN] Ein Neustart wäre erforderlich (immutables rpm-ostree-System)."

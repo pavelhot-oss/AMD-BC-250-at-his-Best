@@ -317,42 +317,40 @@ MSG[m06_dry_build]="[DRY-RUN] cargo build --release dans %s"
 MSG[m06_building]="Compilation du gouverneur (cargo build --release)..."
 MSG[m06_build_failed]="Échec de la compilation cargo. Vérifiez les erreurs ci-dessus."
 MSG[m06_build_ok]="Compilation réussie. Binaire : %s"
-MSG[m06_follow_readme]="
-⚠️  Le binaire est compilé. Suivez le README du dépôt pour l'installation
-    exacte (service systemd, chemins) qui peut évoluer :
-        %s/README.md
-    Une fois le binaire/service installés par le dépôt lui-même, revenez
-    ici pour la configuration.
-"
-MSG[m06_installed_q]="Le gouverneur est installé (binaire + service systemd présents), continuer la configuration ?"
-MSG[m06_config_postponed]="Configuration reportée. Relancez ce module une fois l'installation du gouverneur terminée."
+MSG[m06_follow_readme]="Installation depuis %s :
+    binaire, politique D-Bus, enveloppe performance-mode et
+    le service systemd cyan-skillfish-governor-smu.
+Le service démarre immédiatement (pas de reboot nécessaire)."
+MSG[m06_installed_q]="Installer le gouverneur (binaire + service systemd) et appliquer le réglage ci-dessous ?"
+MSG[m06_config_postponed]="Installation ignorée. Relancez ce module pour installer et démarrer le gouverneur."
 MSG[m06_generating]="Génération de %s (courbe idle -> cible, température cible %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] Écriture de %s :"
 MSG[m06_toml_header]="# Généré par bc250-beast — module 06
 # Réglages par défaut amont potentiellement instables : tester manuellement
 # avant activation au boot."
-MSG[m06_toml_no_volt]="# voltage non spécifié dans la config -> vérifiez la valeur par défaut du gouverneur"
 MSG[m06_file_written]="Fichier écrit : %s"
-MSG[m06_progression]="
-Progression recommandée par Old Lamer :
+MSG[m06_progression]="Progression recommandée par Old Lamer :
   1500 MHz (stock) -> 2000 MHz (palier facile, ~10%%+ au FurMark)
   -> valider CPU à 3.85 GHz (module 05) -> pousser le GPU plus loin
   UNIQUEMENT si le refroidissement suit (watercooling: jusqu'à ~2.4GHz
   rapporté, ~360W / 30A, d'où l'importance des connecteurs Molex
   additionnels du module 01).
 
-⚠️  IMPORTANT : testez ce fichier de config MANUELLEMENT (démarrage du
-    service en avant-plan / à la main) avant de l'activer au boot.
-    N'activez PAS le service automatiquement depuis ce script."
-MSG[m06_restart_q]="Redémarrer maintenant le service du gouverneur pour appliquer la config testée ?"
-MSG[m06_service_name_hint]="Le nom exact du service peut différer selon la version du dépôt — vérifiez avec 'systemctl list-units | grep -i cyan'."
-MSG[m06_enable_yourself]="Une fois la stabilité confirmée manuellement, activez la persistance vous-même avec :"
-MSG[m06_upstream_service]="Le dépôt amont (branche smu) fournit son propre service systemd."
-MSG[m06_see_readme]="Consultez %s/README.md pour la procédure d'installation exacte."
+  IMPORTANT : une fois le service démarré, lancez une vraie charge GPU
+  (FurMark Vulkan + un jeu) quelques minutes et vérifiez les logs
+  (journalctl -u cyan-skillfish-governor-smu) avant d'y faire confiance."
 
 # ------------------------------------------------------------------
 # Module 07 — réglages système
 # ------------------------------------------------------------------
+MSG[m06_bin_installed]="Binaire installé : %s"
+MSG[m06_perf_installed]="Enveloppe performance-mode installée : %s"
+MSG[m06_dbus_installed]="Politique D-Bus installée : %s"
+MSG[m06_service_installed]="Service systemd installé : %s"
+MSG[m06_started]="Le service du gouverneur est actif."
+MSG[m06_start_failed]="Le service du gouverneur n'a pas démarré proprement. Inspectez le service :"
+MSG[m06_enable_boot_q]="Activer le service du gouverneur au boot (réapplique l'OC à chaque démarrage) ?"
+MSG[m06_enabled]="Service activé au boot."
 MSG[m07_title]="07 - Réglages système (zswap / mitigations / MangoHud)"
 MSG[m07_zswap_ostree]="Activation de zswap + mitigations=off via kernel args (rpm-ostree)..."
 MSG[m07_dry_reboot]="[DRY-RUN] Un reboot serait nécessaire (système immutable rpm-ostree)."

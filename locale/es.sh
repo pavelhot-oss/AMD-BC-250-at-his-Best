@@ -329,43 +329,40 @@ MSG[m06_dry_build]="[DRY-RUN] cargo build --release en %s"
 MSG[m06_building]="Compilando el governor (cargo build --release)..."
 MSG[m06_build_failed]="cargo build falló. Revise los errores anteriores."
 MSG[m06_build_ok]="Compilación correcta. Binario: %s"
-MSG[m06_follow_readme]="
-⚠️  El binario está compilado. Siga el README del repositorio para la
-    instalación exacta (servicio systemd, rutas), que puede cambiar con
-    el tiempo:
-        %s/README.md
-    Una vez instalados el binario/servicio por el propio repositorio,
-    vuelva aquí para la configuración.
-"
-MSG[m06_installed_q]="¿Está instalado el governor (binario + servicio systemd presentes)? ¿Continuar con la configuración?"
-MSG[m06_config_postponed]="Configuración pospuesta. Vuelva a ejecutar este módulo cuando la instalación del governor esté completa."
+MSG[m06_follow_readme]="Instalación desde %s:
+    binario, política D-Bus, envoltorio performance-mode y
+    el servicio systemd cyan-skillfish-governor-smu.
+El servicio se inicia de inmediato (no se requiere reinicio)."
+MSG[m06_installed_q]="¿Instalar el governor (binario + servicio systemd) y aplicar el ajuste de abajo?"
+MSG[m06_config_postponed]="Instalación omitida. Vuelva a ejecutar este módulo para instalar e iniciar el governor."
 MSG[m06_generating]="Generando %s (curva idle -> objetivo, temperatura objetivo %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] Escribiendo %s:"
 MSG[m06_toml_header]="# Generado por bc250-beast — módulo 06
 # Los valores por defecto upstream pueden ser inestables: pruebe
 # manualmente antes de habilitarlo al arranque."
-MSG[m06_toml_no_volt]="# voltaje no definido en la config -> compruebe el valor por defecto del governor"
 MSG[m06_file_written]="Archivo escrito: %s"
-MSG[m06_progression]="
-Progresión recomendada por Old Lamer:
+MSG[m06_progression]="Progresión recomendada por Old Lamer:
   1500 MHz (stock) -> 2000 MHz (paso fácil, ~10%%+ en FurMark)
-  -> validar la CPU a 3.85 GHz (módulo 05) -> subir más la GPU
-  SOLO si la refrigeración aguanta (refrigeración líquida: hasta ~2.4GHz
-  reportados, ~360W / 30A, de ahí la importancia de los conectores Molex
+  -> validar la CPU a 3,85 GHz (módulo 05) -> empujar más la GPU
+  SOLO si la refrigeración acompaña (watercooling: hasta ~2,4 GHz
+  reportado, ~360W / 30A, de ahí la importancia de los conectores Molex
   adicionales del módulo 01).
 
-⚠️  IMPORTANTE: pruebe este archivo de config MANUALMENTE (arranque el
-    servicio en primer plano / a mano) antes de habilitarlo al arranque.
-    NO habilite el servicio automáticamente desde este script."
-MSG[m06_restart_q]="¿Reiniciar ahora el servicio del governor para aplicar la config probada?"
-MSG[m06_service_name_hint]="El nombre exacto del servicio puede variar según la versión del repo — compruébelo con 'systemctl list-units | grep -i cyan'."
-MSG[m06_enable_yourself]="Una vez confirmada la estabilidad manualmente, habilite la persistencia usted mismo con:"
-MSG[m06_upstream_service]="El repo upstream (rama smu) proporciona su propio servicio systemd."
-MSG[m06_see_readme]="Vea %s/README.md para el procedimiento de instalación exacto."
+  IMPORTANTE: una vez iniciado el servicio, ejecute una carga real de GPU
+  (FurMark Vulkan + un juego) durante unos minutos y revise los logs
+  (journalctl -u cyan-skillfish-governor-smu) antes de confiar en ello."
 
 # ------------------------------------------------------------------
 # Module 07 — system tuning
 # ------------------------------------------------------------------
+MSG[m06_bin_installed]="Binario instalado: %s"
+MSG[m06_perf_installed]="Envoltorio performance-mode instalado: %s"
+MSG[m06_dbus_installed]="Política D-Bus instalada: %s"
+MSG[m06_service_installed]="Servicio systemd instalado: %s"
+MSG[m06_started]="El servicio del governor está activo."
+MSG[m06_start_failed]="El servicio del governor no arrancó correctamente. Inspeccione el servicio:"
+MSG[m06_enable_boot_q]="¿Activar el servicio del governor al inicio (reaplica el OC en cada arranque)?"
+MSG[m06_enabled]="Servicio activado al inicio."
 MSG[m07_title]="07 - Ajustes del sistema (zswap / mitigaciones / MangoHud)"
 MSG[m07_zswap_ostree]="Activando zswap + mitigations=off mediante kernel args (rpm-ostree)..."
 MSG[m07_dry_reboot]="[DRY-RUN] Se requeriría un reinicio (sistema inmutable rpm-ostree)."
