@@ -55,6 +55,34 @@ Toolkit to unlock/optimize AMD BC-250 A0 (PCI 1002:13FE, 40 CU) on Linux.
   line (no `do (`, no closing paren). Do NOT put parens around the `in` set —
   EDK2 treats `(0`/`9)` as literal items, so `%i` would include the parens.
   `if ... then` ... `endif` nest fine inside the loop.
+- The EDK2 `set` command does NOT use `=`. `set UF = fs2` tokenizes to 4 args
+  and fails with `set: Too many arguments.`, leaving `UF` UNSET. Correct form
+  is space-separated `set UF fs2` (same as the shipped man page `set src efi`).
+  This bug (`set UF = fs%i`) silently emptied `%UF%` in the fs auto-detect,
+  so the efi invocation `%UF%:\EFI\BOOT\AfuEfix64.efi` collapsed to
+  `:\EFI\BOOT\AfuEfix64.efi` and the shell answered `'...' is not recognized
+  as an internal or external command, operable program, or script file.` —
+  fixed 2026-09-11 in the submodule (`set UF none` / `set UF fs%i`).
+
+## Open issue (2026-09-11, reported by user)
+- `menu 14` (BC250 logo flash) fails in the UEFI shell with "the .efi is not
+  recognized as a program or executable". User has NOT reproduced on other
+  options yet (`menu 01`..`13` untested) — but all options 01-14 call the
+  SAME `%UF%:\EFI\BOOT\AfuEfix64.efi`, only the ROM filename arg differs.
+- ROOT CAUSE FOUND (2026-09-11): our fs auto-detect used `set UF = fs%i`,
+  which EDK2 rejects (`set: Too many arguments.`) leaving `%UF%` empty; the
+  flash line then collapsed to `:\EFI\BOOT\AfuEfix64.efi` and the shell
+  complained it wasn't a recognized program/executable. Fixed in submodule
+  with `set UF none` / `set UF fs%i`. Re-copy `menu.nsh` to the stick.
+- Files verified OK from Linux: `AfuEfix64.efi` is a valid PE32+ x86-64 EFI
+  application (byte-identical across all submodule commits), `Firmware/BC250_3.00_MeiMeiDXEv2.1-TA-v4-BC250`
+  exists, `menu.nsh` on USB matches repo (md5 `df62b889...`).
+- Next step (user): with the fixed `menu.nsh` re-copied to `BC250FLASH`,
+  reboot into BIOS setup, check Secure Boot (prime suspect for a LoadImage
+  refusal), and test `menu 01`. If Secure Boot is off and all options still
+  fail, wipe sdb2 and re-extract: `mkfs.vfat -F 32 -n BC250FLASH /dev/sdb2`
+  then re-copy `EFI/`, `menu.nsh`, `startup.nsh`, `Firmware/` from
+  `vendor/bc250-uefi-menu`.
 
 ## Local git state (session 2026-09-11)
 - Branch `i18n`; ahead of `origin/i18n` by 8 commits.
