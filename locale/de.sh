@@ -402,6 +402,7 @@ MSG[m07_zswap_other_distro_1]="Der offizielle zswap+Swap-Datei-Ablauf ist nur f�
 MSG[m07_zswap_other_distro_2]="Auf %s: zswap über GRUB_CMDLINE_LINUX aktivieren (zswap.enabled=1 zswap.max_pool_percent=%s zswap.compressor=%s)"
 MSG[m07_zswap_other_distro_3]="dann die Bootloader-Konfiguration neu erzeugen (grub-mkconfig / bootctl / usw. je nach Setup) und eine normale Swap-Datei anlegen."
 MSG[m07_zswap_disabled]="ENABLE_ZSWAP=0 in der Konfiguration, Schritt übersprungen."
+MSG[m07_zswap_zram_active]="zram stellt auf diesem System bereits komprimierten Swap bereit (%s) — zswap übersprungen (beides zusammen würde doppelt komprimieren und nur Leistung kosten)."
 MSG[m07_mitig_title]="CPU-Mitigations (Spectre/Meltdown) werden deaktiviert"
 MSG[m07_mitig_warn_1]="Dies verringert den Schutz vor einigen lokalen (Seitenkanal-)Angriffen."
 MSG[m07_mitig_warn_2]="Nur auf einer dedizierten Gaming-Maschine empfohlen, nicht auf einer sensiblen Mehrzweck-Workstation."

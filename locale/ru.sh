@@ -402,6 +402,7 @@ MSG[m07_zswap_other_distro_1]="Официальная процедура zswap+s
 MSG[m07_zswap_other_distro_2]="На %s: включите zswap через GRUB_CMDLINE_LINUX (zswap.enabled=1 zswap.max_pool_percent=%s zswap.compressor=%s)"
 MSG[m07_zswap_other_distro_3]="затем перегенерируйте конфигурацию загрузчика (grub-mkconfig / bootctl и т.д., в зависимости от вашей системы) и создайте обычный swapfile."
 MSG[m07_zswap_disabled]="ENABLE_ZSWAP=0 в конфигурации, шаг пропущен."
+MSG[m07_zswap_zram_active]="zram уже обеспечивает сжатый swap на этой системе (%s) — zswap пропущен (запуск обоих только добавит накладные расходы из-за двойного сжатия)."
 MSG[m07_mitig_title]="Отключение mitigations CPU (защита от Spectre/Meltdown)"
 MSG[m07_mitig_warn_1]="Это снижает защиту от некоторых локальных атак (side-channel)."
 MSG[m07_mitig_warn_2]="Рекомендуется только на выделенной игровой машине, не на чувствительной рабочей станции общего назначения."

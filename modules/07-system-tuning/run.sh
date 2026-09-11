@@ -182,9 +182,22 @@ if [[ "${ENABLE_ZSWAP:-1}" == "1" ]]; then
             fi
             ;;
         arch|fedora|debian)
-            warn "$(t m07_zswap_other_distro_1)"
-            warn "$(t m07_zswap_other_distro_2 "$DISTRO" "${ZSWAP_MAX_POOL_PERCENT:-25}" "${ZSWAP_COMPRESSOR:-lz4}")"
-            warn "$(t m07_zswap_other_distro_3)"
+            # Sur ces distros, zram est l'équivalent natif de zswap (swap
+            # compressé en RAM, ex: Omarchy/SteamOS l'activent par défaut).
+            # Empiler les deux = double compression inutile = perte de perf.
+            zram_algo=""
+            if command -v zramctl &>/dev/null; then
+                zram_algo=$(zramctl -o ALGORITHM 2>/dev/null | sed -n '2p')
+            fi
+            if [[ -n "$zram_algo" ]]; then
+                log "$(t m07_zswap_zram_active "$zram_algo")"
+            elif swapon --show 2>/dev/null | grep -qi zram; then
+                log "$(t m07_zswap_zram_active "zram")"
+            else
+                warn "$(t m07_zswap_other_distro_1)"
+                warn "$(t m07_zswap_other_distro_2 "$DISTRO" "${ZSWAP_MAX_POOL_PERCENT:-25}" "${ZSWAP_COMPRESSOR:-lz4}")"
+                warn "$(t m07_zswap_other_distro_3)"
+            fi
             ;;
     esac
 else

@@ -398,6 +398,7 @@ MSG[m07_zswap_other_distro_1]="The official zswap+swapfile procedure is document
 MSG[m07_zswap_other_distro_2]="On %s: enable zswap via GRUB_CMDLINE_LINUX (zswap.enabled=1 zswap.max_pool_percent=%s zswap.compressor=%s)"
 MSG[m07_zswap_other_distro_3]="then regenerate your bootloader config (grub-mkconfig / bootctl / etc. depending on your setup), and create a regular swapfile."
 MSG[m07_zswap_disabled]="ENABLE_ZSWAP=0 in the config, step skipped."
+MSG[m07_zswap_zram_active]="zram already provides compressed swap on this system (%s) — zswap skipped (running both would double-compress and only cost performance)."
 MSG[m07_mitig_title]="Disabling CPU mitigations (Spectre/Meltdown)"
 MSG[m07_mitig_warn_1]="This reduces protection against some local (side-channel) attacks."
 MSG[m07_mitig_warn_2]="Recommended only on a dedicated gaming machine, not on a sensitive multi-purpose workstation."
