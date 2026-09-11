@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# locale/en.sh — English message catalog for bc250-beast (primary language,
+# locale/en.sh - English message catalog for bc250-beast (primary language,
 # always loaded as the fallback). Sourced by lib/i18n.sh.
 #
 # Rules:
@@ -36,7 +36,7 @@ MSG[common_hw_check_skipped]="Hardware detection skipped (--force)."
 MSG[common_no_bc250]="No AMD BC-250 detected (PCI 1002:13fe not found). Use --force to bypass this safeguard."
 MSG[common_bc250_found]="AMD BC-250 detected (PCI 1002:13fe)."
 MSG[common_apply_live_failed]="install --apply-live failed, falling back to a regular install (reboot required afterwards)"
-MSG[common_steamos_unsupported]="Immutable SteamOS is not supported — Bazzite is the distro recommended by the guide."
+MSG[common_steamos_unsupported]="Immutable SteamOS is not supported - Bazzite is the distro recommended by the guide."
 MSG[common_unknown_distro_pkg]="Unrecognized distribution, install manually: %s"
 MSG[common_reboot_needed]="A reboot is required to apply the changes above."
 MSG[common_reboot_now_q]="Reboot now?"
@@ -49,7 +49,7 @@ MSG[common_m01_not_confirmed]="Module 01 (cooling/power) has not been confirmed.
 # ------------------------------------------------------------------
 # install.sh
 # ------------------------------------------------------------------
-MSG[inst_usage]="install.sh — single entry point of bc250-beast.
+MSG[inst_usage]="install.sh - single entry point of bc250-beast.
 
 Turns an AMD BC-250 into a \"beast\" by orchestrating, in the order
 recommended by the community (Old Lamer synthesis, docs/guide_old_lamer.md),
@@ -65,7 +65,7 @@ Usage:
   sudo ./install.sh --lang en       # UI language, one code per file in locale/
                                     # (also BC250_LANG, or UI_LANG in the config)
   sudo ./install.sh --all --yes     # non-interactive (uses the config values
-                                    # without confirming each step — reserve
+                                    # without confirming each step - reserve
                                     # this for re-deploying a config already
                                     # validated by hand)
   sudo ./install.sh --force ...     # skip BC-250 PCI detection
@@ -83,7 +83,7 @@ MSG[mod_08_desc]="Optional extras (cases, NullVRS, community links)"
 MSG[mod_09_desc]="Validation & benchmark"
 
 MSG[inst_module_not_found]="Module not found: %s"
-MSG[inst_module_failed]="Module %s failed (exit code %s). Stopping the sequence — fix the problem, then re-run with --module %s."
+MSG[inst_module_failed]="Module %s failed (exit code %s). Stopping the sequence - fix the problem, then re-run with --module %s."
 MSG[inst_status_title]="Current status"
 MSG[inst_status_bc250_yes]="AMD BC-250 detected."
 MSG[inst_status_bc250_no]="No AMD BC-250 detected on this system."
@@ -120,7 +120,7 @@ MSG[inst_yes_mode_validation]="--yes mode: running the final validation automati
 # ------------------------------------------------------------------
 # uninstall.sh
 # ------------------------------------------------------------------
-MSG[uninst_usage]="uninstall.sh — removes the PERSISTENT changes installed by bc250-beast.
+MSG[uninst_usage]="uninstall.sh - removes the PERSISTENT changes installed by bc250-beast.
 Does not touch the flashed BIOS (module 02) nor the cooling/wiring (module 01).
 
 Usage:
@@ -135,10 +135,10 @@ MSG[uninst_kargs_reboot]="A reboot is required to apply the kernel args removal.
 MSG[uninst_swap_kept_1]="The Btrfs swapfile (/var/swap) and its fstab line were NOT removed"
 MSG[uninst_swap_kept_2]="automatically (destructive). Remove them manually if desired:"
 MSG[uninst_done_1]="Uninstall complete. The flashed BIOS (module 02) and the wiring"
-MSG[uninst_done_2]="(module 01) remain in place — those are hardware changes."
+MSG[uninst_done_2]="(module 01) remain in place - those are hardware changes."
 
 # ------------------------------------------------------------------
-# Module 00 — preflight
+# Module 00 - preflight
 # ------------------------------------------------------------------
 MSG[m00_title]="00 - Preflight checks"
 MSG[m00_q_test_boot]="Have you done a test boot (PSU + keyboard + DisplayPort) and confirmed BIOS access before continuing?"
@@ -155,7 +155,7 @@ MSG[m00_deps_ok]="All base dependencies are present."
 MSG[m00_done]="Preflight complete."
 
 # ------------------------------------------------------------------
-# Module 01 — cooling & power
+# Module 01 - cooling & power
 # ------------------------------------------------------------------
 MSG[m01_title]="01 - Cooling & power delivery (physical steps)"
 MSG[m01_checklist]="This module changes nothing on the machine: cooling and power delivery
@@ -191,7 +191,7 @@ MSG[m01_confirmed]="Physical step validated by the user. You can continue."
 MSG[m01_not_confirmed]="Step not confirmed. It is strongly recommended to handle it before moving on to overclocking (modules 05/06)."
 
 # ------------------------------------------------------------------
-# Module 02 — BIOS/UEFI
+# Module 02 - BIOS/UEFI
 # ------------------------------------------------------------------
 MSG[m02_title]="02 - Modified BIOS/UEFI (8 cores built in + 512MB VRAM)"
 MSG[m02_intro]="This step flashes a modified BIOS (Forbidden-Darkness UEFI Menu Script)
@@ -201,7 +201,7 @@ which:
   - lets you change the VRAM allocation from 8 GB (default) to 512 MB,
     required for dynamic RAM/VRAM allocation in games
 
-Procedure (summary — follow the project's official video for the visual
+Procedure (summary - follow the project's official video for the visual
 details, link in docs/guide_old_lamer.md section 4):
 
   1. A formatted USB stick is required.
@@ -224,21 +224,21 @@ MSG[m02_usb_prompt]="Mount point of the target USB stick (e.g. /run/media/\$USER
 MSG[m02_copying]="Copying reboot-uefi.sh and Firmware.7z to %s ..."
 MSG[m02_copied]="Files copied. Then run, FROM THE USB STICK:"
 MSG[m02_copy_skipped]="Copy skipped. You can run it manually:"
-MSG[m02_yes_mode_tool_1]="BC250_YES=1: reboot-uefi.sh is an interactive tool (menu, prompts) — not launched automatically."
+MSG[m02_yes_mode_tool_1]="BC250_YES=1: reboot-uefi.sh is an interactive tool (menu, prompts) - not launched automatically."
 MSG[m02_yes_mode_tool_2]="Run it yourself: sudo bash '%s'"
 MSG[m02_run_tool_q]="Launch the interactive reboot-uefi.sh tool now (menu options 4 then 2)?"
 MSG[m02_reminder_1]="Reminder: after the flash + CMOS clear, enter the BIOS to enable"
 MSG[m02_reminder_2]="\"Unlock CPU cores\" and set the VRAM to %s MB before continuing."
 MSG[m02_flashed_q]="Is the BIOS flash done and the 'Unlock CPU cores' option enabled in the BIOS?"
-MSG[m02_flag_created]="Flag bios_flashed.flag created — module 03 will detect the modified BIOS."
+MSG[m02_flag_created]="Flag bios_flashed.flag created - module 03 will detect the modified BIOS."
 MSG[m02_flag_not_created]="Flag not created. Module 03 will attempt the software unlock (volatile)."
 MSG[m02_bios_check]="Current BIOS version: %s (the flash images are based on BIOS 3.00)"
-MSG[m02_extract_note]="No 7z extractor (7z/7za/bsdtar) on this host — copied Firmware.7z to the stick root. Unpack it there from the UEFI tool (option 4) before flashing."
+MSG[m02_extract_note]="No 7z extractor (7z/7za/bsdtar) on this host - copied Firmware.7z to the stick root. Unpack it there from the UEFI tool (option 4) before flashing."
 MSG[m02_backup_hint]="In the UEFI menu: FIRST run [menu 0f] to export your current ROM to \\Firmware_Backup\\bc250-backup.rom (restore with [menu fr]), THEN flash your chosen profile."
-MSG[m02_flag_not_auto]="BC250_YES=1: bios_flashed.flag was NOT created. The flash is a real physical step — re-run interactively and confirm once the new BIOS is actually in place."
+MSG[m02_flag_not_auto]="BC250_YES=1: bios_flashed.flag was NOT created. The flash is a real physical step - re-run interactively and confirm once the new BIOS is actually in place."
 
 # ------------------------------------------------------------------
-# Module 03 — CPU core unlock
+# Module 03 - CPU core unlock
 # ------------------------------------------------------------------
 MSG[m03_title]="03 - CPU 8-core unlock"
 MSG[m03_bios_detected_1]="Modified BIOS detected. The 8-core unlock is handled natively by the BIOS."
@@ -256,7 +256,7 @@ MSG[m03_no_persistence]="Persistence not installed: re-run this module after eve
 MSG[m03_reboot_q]="Reboot now to enable the 8 cores?"
 
 # ------------------------------------------------------------------
-# Module 04 — GPU CU unlock
+# Module 04 - GPU CU unlock
 # ------------------------------------------------------------------
 MSG[m04_title]="04 - GPU Compute Unit (CU) unlock"
 MSG[m04_umr_missing]="umr not found, installing via the bundled tool..."
@@ -286,7 +286,7 @@ This module (live manager) remains the recommended first method.
 --------------------------------------------------------------------"
 
 # ------------------------------------------------------------------
-# Module 05 — CPU overclock
+# Module 05 - CPU overclock
 # ------------------------------------------------------------------
 MSG[m05_title]="05 - CPU overclock / undervolt"
 MSG[m05_vid_over_limit]="CPU_VID_MV=%s exceeds the absolute safety limit of 1300 mV. Fix config/bc250-beast.conf."
@@ -294,26 +294,26 @@ MSG[m05_install_stress]="Installing the 'stress-ng' stress-test tool..."
 MSG[m05_install_smu_oc]="Installing bc250-smu-oc from the vendored copy..."
 MSG[m05_apply_q]="Apply %s MHz @ %s mV now?"
 MSG[m05_applying]="Applying the OC WITH persistence (--keep): %s MHz @ %s mV (temp limit %s°C)"
-MSG[m05_detect_failed]="bc250-detect failed — reverting to stock."
-MSG[m05_config_missing]="No stable configuration was generated (overclock.conf missing) — reverting to stock."
-MSG[m05_threads_warn_1]="%s threads visible (expected 16 after the 8-core unlock) — did you"
+MSG[m05_detect_failed]="bc250-detect failed - reverting to stock."
+MSG[m05_config_missing]="No stable configuration was generated (overclock.conf missing) - reverting to stock."
+MSG[m05_threads_warn_1]="%s threads visible (expected 16 after the 8-core unlock) - did you"
 MSG[m05_threads_warn_2]="reboot since module 03? The stress test will use %s threads anyway."
 MSG[m05_stress_start]="CPU stress test for %ss (stress-ng --cpu %s --timeout %ss)..."
-MSG[m05_stress_failed]="Stress test failed — reverting to stock."
+MSG[m05_stress_failed]="Stress test failed - reverting to stock."
 MSG[m05_reverted]="Reverted to stock."
 MSG[m05_stable_q]="The system stayed stable, make this setting permanent at boot?"
 MSG[m05_apply_install_failed]="Could not write the boot configuration (bc250-apply --install failed)."
 MSG[m05_service_enabled]="Service bc250-smu-oc enabled at boot with %sMHz @ %smV."
-MSG[m05_service_missing]="bc250-smu-oc.service was not created — the OC will not be applied at boot."
+MSG[m05_service_missing]="bc250-smu-oc.service was not created - the OC will not be applied at boot."
 MSG[m05_service_enable_failed]="Could not enable bc250-smu-oc.service at boot."
-MSG[m05_not_permanent]="Setting not made permanent — reverting to stock."
+MSG[m05_not_permanent]="Setting not made permanent - reverting to stock."
 MSG[m05_monitoring_tip]="
 Monitoring tips:
   - amdgpu_top (live SMU metrics)
   - watch -n 1 \"cat /proc/cpuinfo | grep MHz\"   (spot clock stretching)"
 
 # ------------------------------------------------------------------
-# Module 06 — GPU governor
+# Module 06 - GPU governor
 # ------------------------------------------------------------------
 MSG[m06_title]="06 - GPU overclock (cyan-skillfish-governor)"
 MSG[m06_missing_deps]="Missing build dependencies:"
@@ -337,7 +337,7 @@ MSG[m06_installed_q]="Install the governor (binary + systemd service) and apply 
 MSG[m06_config_postponed]="Installation skipped. Re-run this module to install and start the governor."
 MSG[m06_generating]="Generating %s (idle -> target curve, target temperature %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] Writing %s:"
-MSG[m06_toml_header]="# Generated by bc250-beast — module 06
+MSG[m06_toml_header]="# Generated by bc250-beast - module 06
 # Upstream defaults may be unstable: test manually
 # before enabling at boot."
 MSG[m06_file_written]="File written: %s"
@@ -353,7 +353,7 @@ MSG[m06_progression]="Progression recommended by Old Lamer:
   (journalctl -u cyan-skillfish-governor-smu) before trusting it."
 
 # ------------------------------------------------------------------
-# Module 07 — system tuning
+# Module 07 - system tuning
 # ------------------------------------------------------------------
 MSG[m06_bin_installed]="Binary installed: %s"
 MSG[m06_perf_installed]="Performance-mode wrapper installed: %s"
@@ -368,7 +368,7 @@ MSG[m07_zswap_ostree]="Enabling zswap + mitigations=off via kernel args (rpm-ost
 MSG[m07_dry_reboot]="[DRY-RUN] A reboot would be required (immutable rpm-ostree system)."
 MSG[m07_ostree_reboot]="A reboot is required (immutable rpm-ostree system)."
 MSG[m07_rerun_after_reboot]="Re-run this module after the reboot: it will detect that the kernel args are already active."
-MSG[m07_var_not_btrfs_1]="/var is not on Btrfs on this system — the official procedure (dedicated Btrfs"
+MSG[m07_var_not_btrfs_1]="/var is not on Btrfs on this system - the official procedure (dedicated Btrfs"
 MSG[m07_var_not_btrfs_2]="swapfile) does not apply as-is. Create a regular swapfile manually,"
 MSG[m07_var_not_btrfs_3]="or skip this sub-module if you are not on Bazzite/Btrfs."
 MSG[m07_dry_rm_swap]="[DRY-RUN] rm -rf /var/swap (if present)"
@@ -388,17 +388,17 @@ MSG[m07_final_check]="Final check:"
 MSG[m07_zswap_not_active]="zswap not active yet (reboot pending?)"
 MSG[m07_mangohud_title]="Installing MangoHud (FPS/temp/GPU-CPU usage overlay)"
 MSG[m07_dry_mangohud_bazzite]="[DRY-RUN] MangoHud is usually preinstalled on Bazzite. Check: command -v mangohud || pkg_install mangohud"
-MSG[m07_dry_mangohud_steamos]="[DRY-RUN] MangoHud preinstalled on SteamOS — skipping installation"
+MSG[m07_dry_mangohud_steamos]="[DRY-RUN] MangoHud preinstalled on SteamOS - skipping installation"
 MSG[m07_mangohud_bazzite_check]="MangoHud is usually preinstalled on Bazzite. Checking..."
 MSG[m07_mangohud_present]="MangoHud already present."
-MSG[m07_mangohud_steamos]="MangoHud preinstalled on SteamOS — skipping installation"
+MSG[m07_mangohud_steamos]="MangoHud preinstalled on SteamOS - skipping installation"
 MSG[m07_mangohud_steam_hint]="To enable it in Steam: add 'mangohud %%command%%' to a game's launch options."
 MSG[m07_zswap_already]="zswap already enabled at the kernel level, going straight to the swapfile creation."
 MSG[m07_zswap_other_distro_1]="The official zswap+swapfile procedure is documented for Bazzite/rpm-ostree+Btrfs only."
 MSG[m07_zswap_other_distro_2]="On %s: enable zswap via GRUB_CMDLINE_LINUX (zswap.enabled=1 zswap.max_pool_percent=%s zswap.compressor=%s)"
 MSG[m07_zswap_other_distro_3]="then regenerate your bootloader config (grub-mkconfig / bootctl / etc. depending on your setup), and create a regular swapfile."
 MSG[m07_zswap_disabled]="ENABLE_ZSWAP=0 in the config, step skipped."
-MSG[m07_zswap_zram_active]="zram already provides compressed swap on this system (%s) — zswap skipped (running both would double-compress and only cost performance)."
+MSG[m07_zswap_zram_active]="zram already provides compressed swap on this system (%s) - zswap skipped (running both would double-compress and only cost performance)."
 MSG[m07_mitig_title]="Disabling CPU mitigations (Spectre/Meltdown)"
 MSG[m07_mitig_warn_1]="This reduces protection against some local (side-channel) attacks."
 MSG[m07_mitig_warn_2]="Recommended only on a dedicated gaming machine, not on a sensitive multi-purpose workstation."
@@ -412,7 +412,7 @@ MSG[m07_mitig_skipped]="DISABLE_CPU_MITIGATIONS=0 (or unset), step skipped."
 MSG[m07_done]="Module 07 complete."
 
 # ------------------------------------------------------------------
-# Module 08 — extras
+# Module 08 - extras
 # ------------------------------------------------------------------
 MSG[m08_title]="08 - Optional extras"
 MSG[m08_intro]="This section gathers optional extras mentioned in Old Lamer's videos,
@@ -473,7 +473,7 @@ MSG[m08_prompt]="Choice [1-3/q]: "
 MSG[m08_done]="Module 08 complete."
 
 # ------------------------------------------------------------------
-# Module 09 — validation
+# Module 09 - validation
 # ------------------------------------------------------------------
 MSG[m09_title]="09 - Validation & Benchmark"
 MSG[m09_invalid_status]="Invalid status for report_result: %s"
@@ -483,18 +483,18 @@ MSG[m09_dry_cpu_cores]="[DRY-RUN] Checking the CPU core count (expected: 16 thre
 MSG[m09_t_cpu_cores_16]="CPU cores (16 threads / 8 cores)"
 MSG[m09_threads_detected]="%s threads detected"
 MSG[m09_t_cpu_cores_8]="CPU cores (8 threads / 4 cores)"
-MSG[m09_threads_not_unlocked]="%s threads — 8-core unlock not applied (module 03)"
-MSG[m09_threads_bios_unlocked]="%s threads — 8-core unlock active via the modded BIOS (module 02)"
-MSG[m09_threads_bios_not_enabled]="%s threads — enable \"Unlock CPU cores\" in the modded BIOS"
+MSG[m09_threads_not_unlocked]="%s threads - 8-core unlock not applied (module 03)"
+MSG[m09_threads_bios_unlocked]="%s threads - 8-core unlock active via the modded BIOS (module 02)"
+MSG[m09_threads_bios_not_enabled]="%s threads - enable \"Unlock CPU cores\" in the modded BIOS"
 MSG[m09_t_cpu_cores]="CPU cores"
-MSG[m09_threads_unexpected]="%s threads — unexpected"
+MSG[m09_threads_unexpected]="%s threads - unexpected"
 MSG[m09_dry_cpu_freq]="[DRY-RUN] Checking the CPU frequency (config: %s MHz ±100 MHz)"
 MSG[m09_t_cpu_freq_near]="CPU frequency (close to CPU_FREQ_MHZ)"
 MSG[m09_freq_target]="%s MHz under load (target: %s MHz)"
 MSG[m09_t_cpu_freq_diff200]="CPU frequency (deviation ≤ 200 MHz)"
 MSG[m09_t_cpu_freq_diff_gt200]="CPU frequency (deviation > 200 MHz)"
 MSG[m09_freq_target_diff]="%s MHz (target: %s MHz, deviation: %s MHz)"
-MSG[m09_freq_under_target]="%s MHz under load (target: %s MHz, deviation: %s MHz) — OC not applied (module 05) or throttling"
+MSG[m09_freq_under_target]="%s MHz under load (target: %s MHz, deviation: %s MHz) - OC not applied (module 05) or throttling"
 MSG[m09_t_cpu_freq]="CPU frequency"
 MSG[m09_cpuinfo_unreadable]="Unable to read /proc/cpuinfo"
 MSG[m09_dry_gpu_cu]="[DRY-RUN] Checking the active GPU CUs via bc250-cu-live-manager (config: %s)"
@@ -511,7 +511,7 @@ MSG[m09_t_service]="Service %s"
 MSG[m09_svc_active]="active"
 MSG[m09_svc_enabled_inactive]="enabled but not active (still starting?)"
 MSG[m09_svc_inactive]="inactive / not enabled"
-MSG[m09_svc_bios_governs]="not required — cores governed by the modded BIOS (module 02)"
+MSG[m09_svc_bios_governs]="not required - cores governed by the modded BIOS (module 02)"
 MSG[m09_dry_vram]="[DRY-RUN] Checking the BIOS VRAM allocation (target: %s MB)"
 MSG[m09_t_vram_target]="BIOS VRAM (%s MB)"
 MSG[m09_vram_detected]="%s MB detected"
@@ -525,7 +525,7 @@ MSG[m09_t_cpu_temp_ok]="CPU temperature (≤ 85°C)"
 MSG[m09_t_gpu_temp_ok]="GPU temperature (≤ 80°C)"
 MSG[m09_t_cpu_temp_high]="CPU temperature (> 85°C)"
 MSG[m09_t_gpu_temp_high]="GPU temperature (> 80°C)"
-MSG[m09_temp_check_cooling]="%s°C — check the cooling (module 01)"
+MSG[m09_temp_check_cooling]="%s°C - check the cooling (module 01)"
 MSG[m09_t_cpu_temp]="CPU temperature"
 MSG[m09_t_gpu_temp]="GPU temperature"
 MSG[m09_temp_not_detected]="Not detected via sensors"
@@ -534,19 +534,19 @@ MSG[m09_sensors_missing]="'sensors' command not available (lm-sensors not instal
 MSG[m09_dry_voltage]="[DRY-RUN] Checking the CPU voltage via bc250_smu_oc or sensors (hard limit: 1300 mV, tolerance ±50 mV vs CPU_VID_MV=%s)"
 MSG[m09_t_voltage_ok]="CPU voltage (≤ 1300 mV, tolerance ±50 mV)"
 MSG[m09_t_voltage_danger]="CPU voltage (> 1300 mV = DANGER)"
-MSG[m09_voltage_danger_msg]="%s mV (source: %s) — EXCEEDS THE ABSOLUTE SAFETY LIMIT"
+MSG[m09_voltage_danger_msg]="%s mV (source: %s) - EXCEEDS THE ABSOLUTE SAFETY LIMIT"
 MSG[m09_voltage_ok_msg]="%s mV (target: %s mV, source: %s)"
 MSG[m09_t_voltage_diff]="CPU voltage (deviation > 50 mV vs config)"
 MSG[m09_voltage_diff_msg]="%s mV (target: %s mV, deviation: %s mV, source: %s)"
 MSG[m09_t_voltage]="CPU voltage"
-MSG[m09_voltage_unreadable]="Voltage not readable (bc250_smu_oc, bc250_detect.py, sensors Vcore) — check manually"
+MSG[m09_voltage_unreadable]="Voltage not readable (bc250_smu_oc, bc250_detect.py, sensors Vcore) - check manually"
 MSG[m09_dry_gpu_freq]="[DRY-RUN] Checking the GPU frequency via pp_dpm_sclk (auto-detected) or rocm-smi (target: %s MHz ±100 MHz)"
 MSG[m09_t_gpu_freq_near]="GPU frequency (close to GPU_FREQ_MHZ ±100 MHz)"
 MSG[m09_gpu_freq_msg]="%s MHz top state (target: %s MHz, current: %s MHz)"
 MSG[m09_t_gpu_freq_diff]="GPU frequency (deviation > 100 MHz vs config)"
 MSG[m09_gpu_freq_diff_msg]="%s MHz top state (target: %s MHz, deviation: %s MHz, current: %s MHz)"
 MSG[m09_t_gpu_freq]="GPU frequency"
-MSG[m09_gpu_freq_unreadable]="Not readable (pp_dpm_sclk missing, rocm-smi missing) — check manually"
+MSG[m09_gpu_freq_unreadable]="Not readable (pp_dpm_sclk missing, rocm-smi missing) - check manually"
 MSG[m09_stability_title]="Stability tests (optional)"
 MSG[m09_dry_stability]="[DRY-RUN] Stability tests: simulated confirmation = YES, duration = %ss"
 MSG[m09_yes_duration]="BC250_YES=1: default duration 300 s (recommended)."
@@ -556,12 +556,14 @@ MSG[m09_t_cpu_stability]="CPU stability (stress-ng %ss)"
 MSG[m09_t_gpu_stability]="GPU stability (FurMark %ss)"
 MSG[m09_stress_cpu_start]="Starting stress-ng CPU %ss (uses all cores)..."
 MSG[m09_finished_ok]="Finished without errors"
-MSG[m09_failed_unstable]="Failure or interruption — instability detected"
+MSG[m09_failed_unstable]="Failure or interruption - instability detected"
 MSG[m09_stress_ng_missing]="stress-ng not installed (pkg_install stress-ng to add it)"
 MSG[m09_dry_furmark]="[DRY-RUN] FurMark GPU test %ss"
 MSG[m09_furmark_start]="Starting FurMark GPU %ss..."
+MSG[m09_gpu_furmark_vk]="FurMark 2.x: using the Vulkan furmark-vk demo (the one MangoHud can overlay; 2.x has no -t)"
+MSG[m09_furmark_v2_demo]="FurMark 2.x engine war of: no -t; will run the furmark-vk Vulkan stress demo instead"
 MSG[m09_furmark_missing]="FurMark not installed, GPU test skipped"
-MSG[m09_gpu_pair_mangohud]="GPU stress paired with MangoHud (live sclk/temp/VRAM overlay while the test runs — module 07 provides it). Best-effort: if FurMark loads pure OpenGL the overlay won't draw, but the stress itself keeps running."
+MSG[m09_gpu_pair_mangohud]="GPU stress paired with MangoHud (live sclk/temp/VRAM overlay while the test runs - module 07 provides it). Best-effort: if FurMark loads pure OpenGL the overlay won't draw, but the stress itself keeps running."
 MSG[m09_stability_skipped]="Stability tests skipped at user request."
 MSG[m09_skipped_user]="Skipped (user choice)"
 MSG[m09_score_excellent]="EXCELLENT"
@@ -583,4 +585,4 @@ MSG[m09_reco_warn]="  • Some warnings were raised:
     - GPU CUs / frequency out of spec  → revisit modules 04, 05, 06
     - Missing tools (sensors, FurMark, stress-ng)
       → install them with your package manager"
-MSG[m09_done]="Module 09 complete (Score: %s%% — %sP/%sW/%sF)."
+MSG[m09_done]="Module 09 complete (Score: %s%% - %sP/%sW/%sF)."

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# locale/uk.sh — Ukrainian message catalog for bc250-beast. Loaded by
+# locale/uk.sh - Ukrainian message catalog for bc250-beast. Loaded by
 # lib/i18n.sh on top of locale/en.sh (any key missing here falls back to
 # English).
 #
@@ -39,7 +39,7 @@ MSG[common_hw_check_skipped]="Визначення обладнання проп
 MSG[common_no_bc250]="AMD BC-250 не виявлено (PCI 1002:13fe не знайдено). Використайте --force, щоб обійти цей запобіжник."
 MSG[common_bc250_found]="Виявлено AMD BC-250 (PCI 1002:13fe)."
 MSG[common_apply_live_failed]="install --apply-live не вдався, виконується звичайне встановлення (після нього потрібне перезавантаження)"
-MSG[common_steamos_unsupported]="Незмінна (immutable) SteamOS не підтримується — посібник рекомендує дистрибутив Bazzite."
+MSG[common_steamos_unsupported]="Незмінна (immutable) SteamOS не підтримується - посібник рекомендує дистрибутив Bazzite."
 MSG[common_unknown_distro_pkg]="Нерозпізнаний дистрибутив, встановіть вручну: %s"
 MSG[common_reboot_needed]="Щоб застосувати наведені вище зміни, потрібне перезавантаження."
 MSG[common_reboot_now_q]="Перезавантажити зараз?"
@@ -52,7 +52,7 @@ MSG[common_m01_not_confirmed]="Модуль 01 (охолодження/живл�
 # ------------------------------------------------------------------
 # install.sh
 # ------------------------------------------------------------------
-MSG[inst_usage]="install.sh — єдина точка входу bc250-beast.
+MSG[inst_usage]="install.sh - єдина точка входу bc250-beast.
 
 Перетворює AMD BC-250 на «звіра» (beast), запускаючи в порядку,
 рекомендованому спільнотою (синтез Old Lamer, docs/guide_old_lamer.md),
@@ -69,7 +69,7 @@ bc250-40cu-unlock, bc250_smu_oc, Forbidden-Darkness UEFI BIOS) та кілька
                                     # (також BC250_LANG чи UI_LANG у конфігу)
   sudo ./install.sh --all --yes     # неінтерактивний режим (бере значення з
                                     # конфігурації без підтвердження кожного
-                                    # кроку — лише для повторного розгортання
+                                    # кроку - лише для повторного розгортання
                                     # конфігурації, вже перевіреної вручну)
   sudo ./install.sh --force ...     # пропустити визначення BC-250 через PCI
                                     # (корисно для dev / CI без обладнання)"
@@ -86,7 +86,7 @@ MSG[mod_08_desc]="Додаткові опції (корпуси, NullVRS, пос
 MSG[mod_09_desc]="Перевірка та бенчмарк"
 
 MSG[inst_module_not_found]="Модуль не знайдено: %s"
-MSG[inst_module_failed]="Модуль %s завершився з помилкою (код виходу %s). Послідовність зупинено — усуньте проблему, потім запустіть знову з --module %s."
+MSG[inst_module_failed]="Модуль %s завершився з помилкою (код виходу %s). Послідовність зупинено - усуньте проблему, потім запустіть знову з --module %s."
 MSG[inst_status_title]="Поточний стан"
 MSG[inst_status_bc250_yes]="Виявлено AMD BC-250."
 MSG[inst_status_bc250_no]="AMD BC-250 у цій системі не виявлено."
@@ -123,7 +123,7 @@ MSG[inst_yes_mode_validation]="Режим --yes: фінальна перевір
 # ------------------------------------------------------------------
 # uninstall.sh
 # ------------------------------------------------------------------
-MSG[uninst_usage]="uninstall.sh — видаляє ПОСТІЙНІ зміни, встановлені bc250-beast.
+MSG[uninst_usage]="uninstall.sh - видаляє ПОСТІЙНІ зміни, встановлені bc250-beast.
 Не чіпає прошитий BIOS (модуль 02) та охолодження/проводку (модуль 01).
 
 Використання:
@@ -138,10 +138,10 @@ MSG[uninst_kargs_reboot]="Щоб застосувати видалення ар�
 MSG[uninst_swap_kept_1]="Swap-файл Btrfs (/var/swap) та його рядок у fstab НЕ було видалено"
 MSG[uninst_swap_kept_2]="автоматично (деструктивна дія). За потреби видаліть їх вручну:"
 MSG[uninst_done_1]="Видалення завершено. Прошитий BIOS (модуль 02) та проводка"
-MSG[uninst_done_2]="(модуль 01) залишаються на місці — це апаратні зміни."
+MSG[uninst_done_2]="(модуль 01) залишаються на місці - це апаратні зміни."
 
 # ------------------------------------------------------------------
-# Module 00 — preflight
+# Module 00 - preflight
 # ------------------------------------------------------------------
 MSG[m00_title]="00 - Попередні перевірки"
 MSG[m00_q_test_boot]="Чи виконали ви тестове завантаження (блок живлення + клавіатура + DisplayPort) і чи підтвердили доступ до BIOS, перш ніж продовжувати?"
@@ -158,15 +158,15 @@ MSG[m00_deps_ok]="Усі базові залежності наявні."
 MSG[m00_done]="Попередні перевірки завершено."
 
 # ------------------------------------------------------------------
-# Module 01 — cooling & power
+# Module 01 - cooling & power
 # ------------------------------------------------------------------
 MSG[m01_title]="01 - Охолодження та живлення (фізичні кроки)"
-MSG[m01_checklist]="Цей модуль нічого не змінює на машині: охолодження та живлення —
+MSG[m01_checklist]="Цей модуль нічого не змінює на машині: охолодження та живлення -
 це апаратні кроки, які потрібно виконати ДО програмного розгону
 (модулі 05/06), інакше ви ризикуєте отримати збої, тротлінг або
 навіть пошкодження обладнання.
 
-Чекліст (деталі — у docs/guide_old_lamer.md, розділи 2 та 3):
+Чекліст (деталі - у docs/guide_old_lamer.md, розділи 2 та 3):
 
   [ ] Охолодження обрано та встановлено:
         - водяне охолодження AIO 240 мм (найкращий варіант, <60°C
@@ -195,7 +195,7 @@ MSG[m01_confirmed]="Фізичний крок підтверджено кори�
 MSG[m01_not_confirmed]="Крок не підтверджено. Наполегливо рекомендується виконати його, перш ніж переходити до розгону (модулі 05/06)."
 
 # ------------------------------------------------------------------
-# Module 02 — BIOS/UEFI
+# Module 02 - BIOS/UEFI
 # ------------------------------------------------------------------
 MSG[m02_title]="02 - Модифікований BIOS/UEFI (8 ядер вбудовано + 512MB VRAM)"
 MSG[m02_intro]="Цей крок прошиває модифікований BIOS (Forbidden-Darkness UEFI Menu Script),
@@ -206,7 +206,7 @@ MSG[m02_intro]="Цей крок прошиває модифікований BIOS
   - дозволяє змінити виділення VRAM з 8 ГБ (за замовчуванням) на 512 МБ,
     що потрібно для динамічного розподілу RAM/VRAM в іграх
 
-Процедура (стисло — візуальні деталі дивіться в офіційному відео проєкту,
+Процедура (стисло - візуальні деталі дивіться в офіційному відео проєкту,
 посилання в docs/guide_old_lamer.md, розділ 4):
 
   1. Потрібна відформатована USB-флешка.
@@ -223,27 +223,27 @@ MSG[m02_intro]="Цей крок прошиває модифікований BIOS
 ⚠️  Невдала прошивка BIOS може зробити плату непридатною. Дотримуйтеся
     процедури буквально та збережіть резервну копію старого BIOS."
 MSG[m02_no_removable]="Знімних пристроїв не виявлено."
-MSG[m02_yes_mode_skip_1]="BC250_YES=1: прошивка BIOS — фізичний крок (перезавантаження в оболонку UEFI + ручні"
+MSG[m02_yes_mode_skip_1]="BC250_YES=1: прошивка BIOS - фізичний крок (перезавантаження в оболонку UEFI + ручні"
 MSG[m02_yes_mode_skip_2]="дії), який неможливо зробити неінтерактивним. Крок копіювання на USB-флешку пропущено."
-MSG[m02_usb_prompt]="Точка монтування цільової USB-флешки (напр. /run/media/\$USER/USBSTICK), порожньо — пропустити: "
+MSG[m02_usb_prompt]="Точка монтування цільової USB-флешки (напр. /run/media/\$USER/USBSTICK), порожньо - пропустити: "
 MSG[m02_copying]="Копіювання reboot-uefi.sh та Firmware.7z до %s ..."
 MSG[m02_copied]="Файли скопійовано. Потім запустіть, З USB-ФЛЕШКИ:"
 MSG[m02_copy_skipped]="Копіювання пропущено. Можете запустити вручну:"
-MSG[m02_yes_mode_tool_1]="BC250_YES=1: reboot-uefi.sh — інтерактивний інструмент (меню, запити), автоматично не запускається."
+MSG[m02_yes_mode_tool_1]="BC250_YES=1: reboot-uefi.sh - інтерактивний інструмент (меню, запити), автоматично не запускається."
 MSG[m02_yes_mode_tool_2]="Запустіть його самостійно: sudo bash '%s'"
 MSG[m02_run_tool_q]="Запустити інтерактивний інструмент reboot-uefi.sh зараз (опції меню 4, потім 2)?"
 MSG[m02_reminder_1]="Нагадування: після прошивки + скидання CMOS зайдіть у BIOS, щоб увімкнути"
 MSG[m02_reminder_2]="\"Unlock CPU cores\" і встановити VRAM на %s МБ, перш ніж продовжувати."
 MSG[m02_flashed_q]="Чи прошито BIOS і чи увімкнено опцію 'Unlock CPU cores' у BIOS?"
-MSG[m02_flag_created]="Створено прапорець bios_flashed.flag — модуль 03 виявить модифікований BIOS."
+MSG[m02_flag_created]="Створено прапорець bios_flashed.flag - модуль 03 виявить модифікований BIOS."
 MSG[m02_flag_not_created]="Прапорець не створено. Модуль 03 спробує програмне розблокування (не зберігається)."
 MSG[m02_bios_check]="Поточна версія BIOS: %s (образи прошивки засновані на BIOS 3.00)"
-MSG[m02_extract_note]="На цьому пристрої немає розпакувальника 7z (7z/7za/bsdtar) — Firmware.7z скопійовано в корінь флешки. Розпакуйте його там через утиліту UEFI (опція 4) перед прошиванням."
+MSG[m02_extract_note]="На цьому пристрої немає розпакувальника 7z (7z/7za/bsdtar) - Firmware.7z скопійовано в корінь флешки. Розпакуйте його там через утиліту UEFI (опція 4) перед прошиванням."
 MSG[m02_backup_hint]="У меню UEFI: СПОЧАТКУ виконайте [menu 0f], щоб експортувати поточну ROM у \\Firmware_Backup\\bc250-backup.rom (відновлення через [menu fr]), ПОТІМ прошийте вибраний профіль."
-MSG[m02_flag_not_auto]="BC250_YES=1: bios_flashed.flag НЕ створено. Прошивка — це реальний фізичний крок — запустіть інтерактивно та підтвердіть, коли новий BIOS справді встановлено."
+MSG[m02_flag_not_auto]="BC250_YES=1: bios_flashed.flag НЕ створено. Прошивка - це реальний фізичний крок - запустіть інтерактивно та підтвердіть, коли новий BIOS справді встановлено."
 
 # ------------------------------------------------------------------
-# Module 03 — CPU core unlock
+# Module 03 - CPU core unlock
 # ------------------------------------------------------------------
 MSG[m03_title]="03 - Розблокування 8 ядер CPU"
 MSG[m03_bios_detected_1]="Виявлено модифікований BIOS. Розблокування 8 ядер виконується самим BIOS."
@@ -261,7 +261,7 @@ MSG[m03_no_persistence]="Збереження не встановлено: за�
 MSG[m03_reboot_q]="Перезавантажити зараз, щоб увімкнути 8 ядер?"
 
 # ------------------------------------------------------------------
-# Module 04 — GPU CU unlock
+# Module 04 - GPU CU unlock
 # ------------------------------------------------------------------
 MSG[m04_title]="04 - Розблокування Compute Unit (CU) GPU"
 MSG[m04_umr_missing]="umr не знайдено, встановлення через вбудований інструмент..."
@@ -291,7 +291,7 @@ MSG[m04_alt_method]="
 --------------------------------------------------------------------"
 
 # ------------------------------------------------------------------
-# Module 05 — CPU overclock
+# Module 05 - CPU overclock
 # ------------------------------------------------------------------
 MSG[m05_title]="05 - Розгін / зниження напруги CPU"
 MSG[m05_vid_over_limit]="CPU_VID_MV=%s перевищує абсолютну межу безпеки 1300 мВ. Виправте config/bc250-beast.conf."
@@ -299,26 +299,26 @@ MSG[m05_install_stress]="Встановлення інструмента стр�
 MSG[m05_install_smu_oc]="Встановлення bc250-smu-oc з вбудованої копії..."
 MSG[m05_apply_q]="Застосувати %s МГц @ %s мВ зараз?"
 MSG[m05_applying]="Застосування розгону ЗІ збереженням (--keep): %s МГц @ %s мВ (ліміт температури %s°C)"
-MSG[m05_detect_failed]="bc250-detect не спрацював — повернення до стандартних значень."
-MSG[m05_config_missing]="Стабільну конфігурацію не створено (overclock.conf відсутній) — повернення до стандартних значень."
-MSG[m05_threads_warn_1]="Видно %s потоків (очікується 16 після розблокування 8 ядер) — чи"
+MSG[m05_detect_failed]="bc250-detect не спрацював - повернення до стандартних значень."
+MSG[m05_config_missing]="Стабільну конфігурацію не створено (overclock.conf відсутній) - повернення до стандартних значень."
+MSG[m05_threads_warn_1]="Видно %s потоків (очікується 16 після розблокування 8 ядер) - чи"
 MSG[m05_threads_warn_2]="перезавантажувалися ви після модуля 03? Стрес-тест усе одно використає %s потоків."
 MSG[m05_stress_start]="Стрес-тест CPU протягом %s с (stress-ng --cpu %s --timeout %ss)..."
-MSG[m05_stress_failed]="Стрес-тест не пройдено — повернення до стандартних значень."
+MSG[m05_stress_failed]="Стрес-тест не пройдено - повернення до стандартних значень."
 MSG[m05_reverted]="Повернуто до стандартних значень."
 MSG[m05_stable_q]="Система залишилася стабільною, зробити це налаштування постійним при завантаженні?"
 MSG[m05_apply_install_failed]="Не вдалося записати конфігурацію завантаження (bc250-apply --install не спрацював)."
 MSG[m05_service_enabled]="Сервіс bc250-smu-oc увімкнено при завантаженні з %s МГц @ %s мВ."
-MSG[m05_service_missing]="bc250-smu-oc.service не створено — розгін не застосовуватиметься при завантаженні."
+MSG[m05_service_missing]="bc250-smu-oc.service не створено - розгін не застосовуватиметься при завантаженні."
 MSG[m05_service_enable_failed]="Не вдалося ввімкнути bc250-smu-oc.service при завантаженні."
-MSG[m05_not_permanent]="Налаштування не зроблено постійним — повернення до стандартних значень."
+MSG[m05_not_permanent]="Налаштування не зроблено постійним - повернення до стандартних значень."
 MSG[m05_monitoring_tip]="
 Поради з моніторингу:
   - amdgpu_top (метрики SMU наживо)
   - watch -n 1 \"cat /proc/cpuinfo | grep MHz\"   (помітити clock stretching)"
 
 # ------------------------------------------------------------------
-# Module 06 — GPU governor
+# Module 06 - GPU governor
 # ------------------------------------------------------------------
 MSG[m06_title]="06 - Розгін GPU (cyan-skillfish-governor)"
 MSG[m06_missing_deps]="Відсутні залежності для збірки:"
@@ -342,7 +342,7 @@ MSG[m06_installed_q]="Встановити регулятор (бінарний 
 MSG[m06_config_postponed]="Встановлення пропущено. Запустіть цей модуль знову, щоб встановити та запустити регулятор."
 MSG[m06_generating]="Генерація %s (крива idle -> ціль, цільова температура %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] Запис %s:"
-MSG[m06_toml_header]="# Згенеровано bc250-beast — модуль 06
+MSG[m06_toml_header]="# Згенеровано bc250-beast - модуль 06
 # Типові значення upstream можуть бути нестабільними: перевірте вручну,
 # перш ніж вмикати при завантаженні."
 MSG[m06_file_written]="Файл записано: %s"
@@ -358,7 +358,7 @@ MSG[m06_progression]="Рекомендована Old Lamer прогресія:
   (journalctl -u cyan-skillfish-governor-smu), перш ніж довіряти."
 
 # ------------------------------------------------------------------
-# Module 07 — system tuning
+# Module 07 - system tuning
 # ------------------------------------------------------------------
 MSG[m06_bin_installed]="Бінарний файл встановлено: %s"
 MSG[m06_perf_installed]="Обгортку performance-mode встановлено: %s"
@@ -373,7 +373,7 @@ MSG[m07_zswap_ostree]="Увімкнення zswap + mitigations=off через �
 MSG[m07_dry_reboot]="[DRY-RUN] Було б потрібне перезавантаження (незмінна система rpm-ostree)."
 MSG[m07_ostree_reboot]="Потрібне перезавантаження (незмінна система rpm-ostree)."
 MSG[m07_rerun_after_reboot]="Запустіть цей модуль знову після перезавантаження: він виявить, що аргументи ядра вже активні."
-MSG[m07_var_not_btrfs_1]="/var у цій системі не на Btrfs — офіційна процедура (окремий swap-файл"
+MSG[m07_var_not_btrfs_1]="/var у цій системі не на Btrfs - офіційна процедура (окремий swap-файл"
 MSG[m07_var_not_btrfs_2]="на Btrfs) як є не застосовна. Створіть звичайний swap-файл вручну"
 MSG[m07_var_not_btrfs_3]="або пропустіть цей підмодуль, якщо ви не на Bazzite/Btrfs."
 MSG[m07_dry_rm_swap]="[DRY-RUN] rm -rf /var/swap (якщо є)"
@@ -393,17 +393,17 @@ MSG[m07_final_check]="Фінальна перевірка:"
 MSG[m07_zswap_not_active]="zswap ще не активний (очікується перезавантаження?)"
 MSG[m07_mangohud_title]="Встановлення MangoHud (оверлей FPS/температури/завантаження GPU-CPU)"
 MSG[m07_dry_mangohud_bazzite]="[DRY-RUN] MangoHud зазвичай попередньо встановлений на Bazzite. Перевірка: command -v mangohud || pkg_install mangohud"
-MSG[m07_dry_mangohud_steamos]="[DRY-RUN] MangoHud попередньо встановлений на SteamOS — встановлення пропущено"
+MSG[m07_dry_mangohud_steamos]="[DRY-RUN] MangoHud попередньо встановлений на SteamOS - встановлення пропущено"
 MSG[m07_mangohud_bazzite_check]="MangoHud зазвичай попередньо встановлений на Bazzite. Перевірка..."
 MSG[m07_mangohud_present]="MangoHud уже наявний."
-MSG[m07_mangohud_steamos]="MangoHud попередньо встановлений на SteamOS — встановлення пропущено"
+MSG[m07_mangohud_steamos]="MangoHud попередньо встановлений на SteamOS - встановлення пропущено"
 MSG[m07_mangohud_steam_hint]="Щоб увімкнути його в Steam: додайте 'mangohud %%command%%' до параметрів запуску гри."
 MSG[m07_zswap_already]="zswap уже увімкнено на рівні ядра, переходимо одразу до створення swap-файлу."
 MSG[m07_zswap_other_distro_1]="Офіційна процедура zswap+swap-файл задокументована лише для Bazzite/rpm-ostree+Btrfs."
 MSG[m07_zswap_other_distro_2]="На %s: увімкніть zswap через GRUB_CMDLINE_LINUX (zswap.enabled=1 zswap.max_pool_percent=%s zswap.compressor=%s)"
 MSG[m07_zswap_other_distro_3]="потім перегенеруйте конфігурацію завантажувача (grub-mkconfig / bootctl тощо, залежно від вашої системи) і створіть звичайний swap-файл."
 MSG[m07_zswap_disabled]="ENABLE_ZSWAP=0 у конфігурації, крок пропущено."
-MSG[m07_zswap_zram_active]="zram вже забезпечує стиснутий swap у цій системі (%s) — zswap пропущено (запуск обох лише додасть накладних витрат через подвійне стиснення)."
+MSG[m07_zswap_zram_active]="zram вже забезпечує стиснутий swap у цій системі (%s) - zswap пропущено (запуск обох лише додасть накладних витрат через подвійне стиснення)."
 MSG[m07_mitig_title]="Вимкнення захисту CPU від вразливостей (mitigations: Spectre/Meltdown)"
 MSG[m07_mitig_warn_1]="Це знижує захист від деяких локальних атак (side-channel)."
 MSG[m07_mitig_warn_2]="Рекомендується лише на виділеній ігровій машині, а не на чутливій багатоцільовій робочій станції."
@@ -417,7 +417,7 @@ MSG[m07_mitig_skipped]="DISABLE_CPU_MITIGATIONS=0 (або не задано), к
 MSG[m07_done]="Модуль 07 завершено."
 
 # ------------------------------------------------------------------
-# Module 08 — extras
+# Module 08 - extras
 # ------------------------------------------------------------------
 MSG[m08_title]="08 - Додаткові опції"
 MSG[m08_intro]="Цей розділ збирає додаткові опції, згадані у відео Old Lamer,
@@ -478,7 +478,7 @@ MSG[m08_prompt]="Вибір [1-3/q]: "
 MSG[m08_done]="Модуль 08 завершено."
 
 # ------------------------------------------------------------------
-# Module 09 — validation
+# Module 09 - validation
 # ------------------------------------------------------------------
 MSG[m09_title]="09 - Перевірка та бенчмарк"
 MSG[m09_invalid_status]="Неприпустимий статус для report_result: %s"
@@ -488,18 +488,18 @@ MSG[m09_dry_cpu_cores]="[DRY-RUN] Перевірка кількості ядер
 MSG[m09_t_cpu_cores_16]="Ядра CPU (16 потоків / 8 ядер)"
 MSG[m09_threads_detected]="виявлено %s потоків"
 MSG[m09_t_cpu_cores_8]="Ядра CPU (8 потоків / 4 ядра)"
-MSG[m09_threads_not_unlocked]="%s потоків — розблокування 8 ядер не застосовано (модуль 03)"
-MSG[m09_threads_bios_unlocked]="%s потоків — розблокування 8 ядер активне через модифікований BIOS (модуль 02)"
-MSG[m09_threads_bios_not_enabled]="%s потоків — увімкніть «Unlock CPU cores» у модифікованому BIOS"
+MSG[m09_threads_not_unlocked]="%s потоків - розблокування 8 ядер не застосовано (модуль 03)"
+MSG[m09_threads_bios_unlocked]="%s потоків - розблокування 8 ядер активне через модифікований BIOS (модуль 02)"
+MSG[m09_threads_bios_not_enabled]="%s потоків - увімкніть «Unlock CPU cores» у модифікованому BIOS"
 MSG[m09_t_cpu_cores]="Ядра CPU"
-MSG[m09_threads_unexpected]="%s потоків — неочікувано"
+MSG[m09_threads_unexpected]="%s потоків - неочікувано"
 MSG[m09_dry_cpu_freq]="[DRY-RUN] Перевірка частоти CPU (конфігурація: %s МГц ±100 МГц)"
 MSG[m09_t_cpu_freq_near]="Частота CPU (близько до CPU_FREQ_MHZ)"
 MSG[m09_freq_target]="%s МГц під навантаженням (ціль: %s МГц)"
 MSG[m09_t_cpu_freq_diff200]="Частота CPU (відхилення ≤ 200 МГц)"
 MSG[m09_t_cpu_freq_diff_gt200]="Частота CPU (відхилення > 200 МГц)"
 MSG[m09_freq_target_diff]="%s МГц (ціль: %s МГц, відхилення: %s МГц)"
-MSG[m09_freq_under_target]="%s МГц під навантаженням (ціль: %s МГц, відхилення: %s МГц) — OC не застосовано (модуль 05) або троттлінг"
+MSG[m09_freq_under_target]="%s МГц під навантаженням (ціль: %s МГц, відхилення: %s МГц) - OC не застосовано (модуль 05) або троттлінг"
 MSG[m09_t_cpu_freq]="Частота CPU"
 MSG[m09_cpuinfo_unreadable]="Не вдалося прочитати /proc/cpuinfo"
 MSG[m09_dry_gpu_cu]="[DRY-RUN] Перевірка активних CU GPU через bc250-cu-live-manager (конфігурація: %s)"
@@ -516,7 +516,7 @@ MSG[m09_t_service]="Сервіс %s"
 MSG[m09_svc_active]="активний"
 MSG[m09_svc_enabled_inactive]="увімкнений, але не активний (ще запускається?)"
 MSG[m09_svc_inactive]="неактивний / не увімкнений"
-MSG[m09_svc_bios_governs]="не потрібен — ядра керуються модифікованим BIOS (модуль 02)"
+MSG[m09_svc_bios_governs]="не потрібен - ядра керуються модифікованим BIOS (модуль 02)"
 MSG[m09_dry_vram]="[DRY-RUN] Перевірка виділення VRAM у BIOS (ціль: %s МБ)"
 MSG[m09_t_vram_target]="VRAM у BIOS (%s МБ)"
 MSG[m09_vram_detected]="виявлено %s МБ"
@@ -530,7 +530,7 @@ MSG[m09_t_cpu_temp_ok]="Температура CPU (≤ 85°C)"
 MSG[m09_t_gpu_temp_ok]="Температура GPU (≤ 80°C)"
 MSG[m09_t_cpu_temp_high]="Температура CPU (> 85°C)"
 MSG[m09_t_gpu_temp_high]="Температура GPU (> 80°C)"
-MSG[m09_temp_check_cooling]="%s°C — перевірте охолодження (модуль 01)"
+MSG[m09_temp_check_cooling]="%s°C - перевірте охолодження (модуль 01)"
 MSG[m09_t_cpu_temp]="Температура CPU"
 MSG[m09_t_gpu_temp]="Температура GPU"
 MSG[m09_temp_not_detected]="Не виявлено через sensors"
@@ -539,19 +539,19 @@ MSG[m09_sensors_missing]="Команда 'sensors' недоступна (lm-sens
 MSG[m09_dry_voltage]="[DRY-RUN] Перевірка напруги CPU через bc250_smu_oc або sensors (жорстка межа: 1300 мВ, допуск ±50 мВ від CPU_VID_MV=%s)"
 MSG[m09_t_voltage_ok]="Напруга CPU (≤ 1300 мВ, допуск ±50 мВ)"
 MSG[m09_t_voltage_danger]="Напруга CPU (> 1300 мВ = НЕБЕЗПЕКА)"
-MSG[m09_voltage_danger_msg]="%s мВ (джерело: %s) — ПЕРЕВИЩУЄ АБСОЛЮТНУ МЕЖУ БЕЗПЕКИ"
+MSG[m09_voltage_danger_msg]="%s мВ (джерело: %s) - ПЕРЕВИЩУЄ АБСОЛЮТНУ МЕЖУ БЕЗПЕКИ"
 MSG[m09_voltage_ok_msg]="%s мВ (ціль: %s мВ, джерело: %s)"
 MSG[m09_t_voltage_diff]="Напруга CPU (відхилення > 50 мВ)"
 MSG[m09_voltage_diff_msg]="%s мВ (ціль: %s мВ, відхилення: %s мВ, джерело: %s)"
 MSG[m09_t_voltage]="Напруга CPU"
-MSG[m09_voltage_unreadable]="Напругу не вдалося прочитати (bc250_smu_oc, bc250_detect.py, sensors Vcore) — перевірте вручну"
+MSG[m09_voltage_unreadable]="Напругу не вдалося прочитати (bc250_smu_oc, bc250_detect.py, sensors Vcore) - перевірте вручну"
 MSG[m09_dry_gpu_freq]="[DRY-RUN] Перевірка частоти GPU через pp_dpm_sclk або rocm-smi (ціль: %s МГц ±100 МГц)"
 MSG[m09_t_gpu_freq_near]="Частота GPU (GPU_FREQ_MHZ ±100 МГц)"
 MSG[m09_gpu_freq_msg]="%s МГц верхній стан (ціль: %s МГц, поточний: %s МГц)"
 MSG[m09_t_gpu_freq_diff]="Частота GPU (відхилення > 100 МГц)"
 MSG[m09_gpu_freq_diff_msg]="%s МГц верхній стан (ціль: %s МГц, відхилення: %s МГц, поточний: %s МГц)"
 MSG[m09_t_gpu_freq]="Частота GPU"
-MSG[m09_gpu_freq_unreadable]="Не вдалося прочитати (pp_dpm_sclk відсутній, rocm-smi відсутній) — перевірте вручну"
+MSG[m09_gpu_freq_unreadable]="Не вдалося прочитати (pp_dpm_sclk відсутній, rocm-smi відсутній) - перевірте вручну"
 MSG[m09_stability_title]="Тести стабільності (необов'язково)"
 MSG[m09_dry_stability]="[DRY-RUN] Тести стабільності: імітоване підтвердження = ТАК, тривалість = %s с"
 MSG[m09_yes_duration]="BC250_YES=1: типова тривалість 300 с (рекомендовано)."
@@ -561,12 +561,14 @@ MSG[m09_t_cpu_stability]="Стабільність CPU (stress-ng %s с)"
 MSG[m09_t_gpu_stability]="Стабільність GPU (FurMark %s с)"
 MSG[m09_stress_cpu_start]="Запуск stress-ng CPU на %s с (використовує всі ядра)..."
 MSG[m09_finished_ok]="Завершено без помилок"
-MSG[m09_failed_unstable]="Збій або переривання — виявлено нестабільність"
+MSG[m09_failed_unstable]="Збій або переривання - виявлено нестабільність"
 MSG[m09_stress_ng_missing]="stress-ng не встановлено (pkg_install stress-ng, щоб додати)"
 MSG[m09_dry_furmark]="[DRY-RUN] Тест GPU FurMark %s с"
 MSG[m09_furmark_start]="Запуск FurMark GPU на %s с..."
+MSG[m09_gpu_furmark_vk]="FurMark 2.x: стрес Vulkan через демо furmark-vk (те, що MangoHud уміє підсвічувати - у 2.x немає -t)"
+MSG[m09_furmark_v2_demo]="FurMark 2.x: прапорця -t більше нема, замість нього запускається Vulkan-демо furmark-vk"
 MSG[m09_furmark_missing]="FurMark не встановлено, тест GPU пропущено"
-MSG[m09_gpu_pair_mangohud]="Стрес GPU у парі з MangoHud (живий оверлей sclk/темп/VRAM під час тесту — MangoHud ставить модуль 07). Best-effort: якщо FurMark вантажить чистий OpenGL, оверлей не з'явиться, але стрес усе одно триває."
+MSG[m09_gpu_pair_mangohud]="Стрес GPU у парі з MangoHud (живий оверлей sclk/темп/VRAM під час тесту - MangoHud ставить модуль 07). Best-effort: якщо FurMark вантажить чистий OpenGL, оверлей не з'явиться, але стрес усе одно триває."
 MSG[m09_stability_skipped]="Тести стабільності пропущено на вимогу користувача."
 MSG[m09_skipped_user]="Пропущено (вибір користувача)"
 MSG[m09_score_excellent]="ВІДМІННО"
@@ -588,4 +590,4 @@ MSG[m09_reco_warn]="  • Було видано попередження:
     - CU / частота GPU поза нормою     → перегляньте модулі 04, 05, 06
     - відсутні інструменти (sensors, FurMark, stress-ng)
       → встановіть їх через ваш менеджер пакетів"
-MSG[m09_done]="Модуль 09 завершено (Оцінка: %s%% — %sP/%sW/%sF)."
+MSG[m09_done]="Модуль 09 завершено (Оцінка: %s%% - %sP/%sW/%sF)."

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# locale/fr.sh — catalogue de messages français de bc250-beast.
+# locale/fr.sh - catalogue de messages français de bc250-beast.
 # Chargé par lib/i18n.sh par-dessus locale/en.sh (toute clé absente ici
 # s'affiche en anglais). Mêmes règles que en.sh :
 #   - une ligne   MSG[cle]="..."   par message
@@ -33,7 +33,7 @@ MSG[common_hw_check_skipped]="Détection matérielle ignorée (--force)."
 MSG[common_no_bc250]="Aucun AMD BC-250 détecté (PCI 1002:13fe absent). Utilisez --force pour ignorer ce garde-fou."
 MSG[common_bc250_found]="AMD BC-250 détecté (PCI 1002:13fe)."
 MSG[common_apply_live_failed]="install --apply-live a échoué, tentative d'install classique (reboot requis ensuite)"
-MSG[common_steamos_unsupported]="SteamOS immutable non géré — Bazzite est la distro recommandée par le guide."
+MSG[common_steamos_unsupported]="SteamOS immutable non géré - Bazzite est la distro recommandée par le guide."
 MSG[common_unknown_distro_pkg]="Distribution non reconnue, installez manuellement : %s"
 MSG[common_reboot_needed]="Un redémarrage est nécessaire pour appliquer les changements ci-dessus."
 MSG[common_reboot_now_q]="Redémarrer maintenant ?"
@@ -46,7 +46,7 @@ MSG[common_m01_not_confirmed]="Le module 01 (refroidissement/alimentation) n'a p
 # ------------------------------------------------------------------
 # install.sh
 # ------------------------------------------------------------------
-MSG[inst_usage]="install.sh — Point d'entrée unique de bc250-beast.
+MSG[inst_usage]="install.sh - Point d'entrée unique de bc250-beast.
 
 Transforme un AMD BC-250 en \"bête de course\" en orchestrant, dans l'ordre
 recommandé par la communauté (synthèse Old Lamer, docs/guide_old_lamer.md),
@@ -63,7 +63,7 @@ Usage :
                                     # dans locale/ (aussi BC250_LANG ou UI_LANG)
   sudo ./install.sh --all --yes     # non-interactif (utilise les valeurs
                                     # de config sans confirmation à chaque
-                                    # étape — à réserver à un ré-déploiement
+                                    # étape - à réserver à un ré-déploiement
                                     # d'une config déjà validée manuellement)
   sudo ./install.sh --force ...     # ignore la détection PCI du BC-250
                                     # (utile en dev / CI hors matériel réel)"
@@ -80,7 +80,7 @@ MSG[mod_08_desc]="Extras optionnels (boîtiers, NullVRS, liens communauté)"
 MSG[mod_09_desc]="Validation & Benchmark"
 
 MSG[inst_module_not_found]="Module introuvable : %s"
-MSG[inst_module_failed]="Le module %s a échoué (code %s). Arrêt de la séquence — corrigez le problème puis relancez avec --module %s."
+MSG[inst_module_failed]="Le module %s a échoué (code %s). Arrêt de la séquence - corrigez le problème puis relancez avec --module %s."
 MSG[inst_status_title]="État actuel"
 MSG[inst_status_bc250_yes]="AMD BC-250 détecté."
 MSG[inst_status_bc250_no]="Aucun AMD BC-250 détecté sur ce système."
@@ -117,7 +117,7 @@ MSG[inst_yes_mode_validation]="Mode --yes : validation finale automatique."
 # ------------------------------------------------------------------
 # uninstall.sh
 # ------------------------------------------------------------------
-MSG[uninst_usage]="uninstall.sh — Retire les changements PERSISTANTS installés par bc250-beast.
+MSG[uninst_usage]="uninstall.sh - Retire les changements PERSISTANTS installés par bc250-beast.
 Ne touche pas au BIOS flashé (module 02) ni au refroidissement/câblage (module 01).
 
 Usage :
@@ -132,10 +132,10 @@ MSG[uninst_kargs_reboot]="Un reboot est nécessaire pour appliquer le retrait de
 MSG[uninst_swap_kept_1]="Le swapfile Btrfs (/var/swap) et sa ligne fstab n'ont PAS été supprimés"
 MSG[uninst_swap_kept_2]="automatiquement (destructif). Supprimez-les manuellement si souhaité :"
 MSG[uninst_done_1]="Désinstallation terminée. Le BIOS flashé (module 02) et le câblage"
-MSG[uninst_done_2]="(module 01) restent en place — ce sont des changements matériels."
+MSG[uninst_done_2]="(module 01) restent en place - ce sont des changements matériels."
 
 # ------------------------------------------------------------------
-# Module 00 — preflight
+# Module 00 - preflight
 # ------------------------------------------------------------------
 MSG[m00_title]="00 - Vérifications préalables"
 MSG[m00_q_test_boot]="Avez-vous effectué un boot de test (alim + clavier + DisplayPort) et confirmé l'accès au BIOS avant de continuer ?"
@@ -152,7 +152,7 @@ MSG[m00_deps_ok]="Toutes les dépendances de base sont présentes."
 MSG[m00_done]="Preflight terminé."
 
 # ------------------------------------------------------------------
-# Module 01 — refroidissement & alimentation
+# Module 01 - refroidissement & alimentation
 # ------------------------------------------------------------------
 MSG[m01_title]="01 - Refroidissement & alimentation (étapes physiques)"
 MSG[m01_checklist]="Ce module ne modifie rien sur la machine : le refroidissement et
@@ -188,7 +188,7 @@ MSG[m01_confirmed]="Étape physique validée par l'utilisateur. Vous pouvez cont
 MSG[m01_not_confirmed]="Étape non confirmée. Il est fortement recommandé de la traiter avant de continuer vers l'overclock (modules 05/06)."
 
 # ------------------------------------------------------------------
-# Module 02 — BIOS/UEFI
+# Module 02 - BIOS/UEFI
 # ------------------------------------------------------------------
 MSG[m02_title]="02 - BIOS/UEFI modifié (8 cœurs intégrés + VRAM 512Mo)"
 MSG[m02_intro]="Cette étape flashe un BIOS modifié (Forbidden-Darkness UEFI Menu Script)
@@ -198,7 +198,7 @@ qui :
   - permet de changer l'allocation VRAM de 8 Go (défaut) à 512 Mo,
     nécessaire pour l'allocation dynamique RAM/VRAM en jeu
 
-Procédure (résumé — suivez la vidéo officielle du projet pour le détail
+Procédure (résumé - suivez la vidéo officielle du projet pour le détail
 visuel, lien dans docs/guide_old_lamer.md section 4) :
 
   1. Une clé USB formatée est nécessaire.
@@ -221,21 +221,21 @@ MSG[m02_usb_prompt]="Point de montage de la clé USB cible (ex: /run/media/\$USE
 MSG[m02_copying]="Copie de reboot-uefi.sh et Firmware.7z vers %s ..."
 MSG[m02_copied]="Fichiers copiés. Lancez ensuite, DEPUIS LA CLÉ USB :"
 MSG[m02_copy_skipped]="Copie ignorée. Vous pouvez lancer manuellement :"
-MSG[m02_yes_mode_tool_1]="BC250_YES=1 : reboot-uefi.sh est un outil interactif (menu, prompts) — non lancé automatiquement."
+MSG[m02_yes_mode_tool_1]="BC250_YES=1 : reboot-uefi.sh est un outil interactif (menu, prompts) - non lancé automatiquement."
 MSG[m02_yes_mode_tool_2]="Lancez-le vous-même : sudo bash '%s'"
 MSG[m02_run_tool_q]="Lancer maintenant l'outil interactif reboot-uefi.sh (menu options 4 puis 2) ?"
 MSG[m02_reminder_1]="Rappel : après le flash + clear CMOS, entrez dans le BIOS pour activer"
 MSG[m02_reminder_2]="\"Unlock CPU cores\" et régler la VRAM à %s Mo avant de continuer."
 MSG[m02_flashed_q]="Le flash BIOS est-il terminé et l'option 'Unlock CPU cores' activée dans le BIOS ?"
-MSG[m02_flag_created]="Flag bios_flashed.flag créé — le module 03 détectera le BIOS modifié."
+MSG[m02_flag_created]="Flag bios_flashed.flag créé - le module 03 détectera le BIOS modifié."
 MSG[m02_flag_not_created]="Flag non créé. Le module 03 tentera l'unlock logiciel (volatile)."
 MSG[m02_bios_check]="Version BIOS actuelle : %s (les images de flash sont basées sur la BIOS 3.00)"
-MSG[m02_extract_note]="Aucun extracteur 7z (7z/7za/bsdtar) sur cette machine — Firmware.7z copié à la racine de la clé. Décompressez-le sur place depuis l'outil UEFI (option 4) avant le flash."
+MSG[m02_extract_note]="Aucun extracteur 7z (7z/7za/bsdtar) sur cette machine - Firmware.7z copié à la racine de la clé. Décompressez-le sur place depuis l'outil UEFI (option 4) avant le flash."
 MSG[m02_backup_hint]="Dans le menu UEFI : lancez D'ABORD [menu 0f] pour exporter votre ROM actuelle vers \\Firmware_Backup\\bc250-backup.rom (restauration avec [menu fr]), PUIS flashez le profil choisi."
-MSG[m02_flag_not_auto]="BC250_YES=1 : bios_flashed.flag NON créé. Le flash est une vraie étape physique — relancez en interactif et confirmez une fois la nouvelle BIOS réellement en place."
+MSG[m02_flag_not_auto]="BC250_YES=1 : bios_flashed.flag NON créé. Le flash est une vraie étape physique - relancez en interactif et confirmez une fois la nouvelle BIOS réellement en place."
 
 # ------------------------------------------------------------------
-# Module 03 — déblocage cœurs CPU
+# Module 03 - déblocage cœurs CPU
 # ------------------------------------------------------------------
 MSG[m03_title]="03 - Déblocage 8 cœurs CPU"
 MSG[m03_bios_detected_1]="BIOS modifié détecté. L'unlock 8 cœurs est géré nativement par le BIOS."
@@ -253,7 +253,7 @@ MSG[m03_no_persistence]="Persistance non installée : relancez ce module après 
 MSG[m03_reboot_q]="Redémarrer maintenant pour activer les 8 cœurs ?"
 
 # ------------------------------------------------------------------
-# Module 04 — déblocage CU GPU
+# Module 04 - déblocage CU GPU
 # ------------------------------------------------------------------
 MSG[m04_title]="04 - Déblocage des Compute Units GPU (CU)"
 MSG[m04_umr_missing]="umr introuvable, installation via l'outil intégré..."
@@ -283,7 +283,7 @@ Ce module (live manager) reste la méthode recommandée en premier lieu.
 --------------------------------------------------------------------"
 
 # ------------------------------------------------------------------
-# Module 05 — overclock CPU
+# Module 05 - overclock CPU
 # ------------------------------------------------------------------
 MSG[m05_title]="05 - Overclock / undervolt CPU"
 MSG[m05_vid_over_limit]="CPU_VID_MV=%s dépasse la limite absolue de sécurité de 1300 mV. Corrigez config/bc250-beast.conf."
@@ -291,26 +291,26 @@ MSG[m05_install_stress]="Installation de l'outil de stress-test 'stress-ng'..."
 MSG[m05_install_smu_oc]="Installation de bc250-smu-oc depuis la copie vendorisée..."
 MSG[m05_apply_q]="Appliquer %s MHz @ %s mV maintenant ?"
 MSG[m05_applying]="Application de l'OC AVEC persistance (--keep) : %s MHz @ %s mV (limite temp %s°C)"
-MSG[m05_detect_failed]="bc250-detect a échoué — retour au stock."
-MSG[m05_config_missing]="Aucune configuration stable générée (overclock.conf manquant) — retour au stock."
-MSG[m05_threads_warn_1]="%s threads visibles (attendu 16 après unlock 8 cœurs) — avez-vous"
+MSG[m05_detect_failed]="bc250-detect a échoué - retour au stock."
+MSG[m05_config_missing]="Aucune configuration stable générée (overclock.conf manquant) - retour au stock."
+MSG[m05_threads_warn_1]="%s threads visibles (attendu 16 après unlock 8 cœurs) - avez-vous"
 MSG[m05_threads_warn_2]="redémarré depuis le module 03 ? Le stress test va quand même utiliser %s threads."
 MSG[m05_stress_start]="Stress test CPU pendant %ss (stress-ng --cpu %s --timeout %ss)..."
-MSG[m05_stress_failed]="Stress test échoué — retour au stock."
+MSG[m05_stress_failed]="Stress test échoué - retour au stock."
 MSG[m05_reverted]="Revert au stock effectué."
 MSG[m05_stable_q]="Le système est resté stable, rendre ce réglage permanent au démarrage ?"
 MSG[m05_apply_install_failed]="Impossible d'écrire la configuration de démarrage (bc250-apply --install a échoué)."
 MSG[m05_service_enabled]="Service bc250-smu-oc activé au démarrage avec %sMHz @ %smV."
-MSG[m05_service_missing]="bc250-smu-oc.service absent — l'OC ne sera pas appliqué au démarrage."
+MSG[m05_service_missing]="bc250-smu-oc.service absent - l'OC ne sera pas appliqué au démarrage."
 MSG[m05_service_enable_failed]="Impossible d'activer bc250-smu-oc.service au démarrage."
-MSG[m05_not_permanent]="Réglage non rendu permanent — retour au stock."
+MSG[m05_not_permanent]="Réglage non rendu permanent - retour au stock."
 MSG[m05_monitoring_tip]="
 Astuce monitoring :
   - amdgpu_top (métriques SMU en direct)
   - watch -n 1 \"cat /proc/cpuinfo | grep MHz\"   (détecter le clock stretching)"
 
 # ------------------------------------------------------------------
-# Module 06 — gouverneur GPU
+# Module 06 - gouverneur GPU
 # ------------------------------------------------------------------
 MSG[m06_title]="06 - Overclock GPU (cyan-skillfish-governor)"
 MSG[m06_missing_deps]="Dépendances de build manquantes :"
@@ -334,7 +334,7 @@ MSG[m06_installed_q]="Installer le gouverneur (binaire + service systemd) et app
 MSG[m06_config_postponed]="Installation ignorée. Relancez ce module pour installer et démarrer le gouverneur."
 MSG[m06_generating]="Génération de %s (courbe idle -> cible, température cible %s°C)..."
 MSG[m06_dry_write]="[DRY-RUN] Écriture de %s :"
-MSG[m06_toml_header]="# Généré par bc250-beast — module 06
+MSG[m06_toml_header]="# Généré par bc250-beast - module 06
 # Réglages par défaut amont potentiellement instables : tester manuellement
 # avant activation au boot."
 MSG[m06_file_written]="Fichier écrit : %s"
@@ -350,7 +350,7 @@ MSG[m06_progression]="Progression recommandée par Old Lamer :
   (journalctl -u cyan-skillfish-governor-smu) avant d'y faire confiance."
 
 # ------------------------------------------------------------------
-# Module 07 — réglages système
+# Module 07 - réglages système
 # ------------------------------------------------------------------
 MSG[m06_bin_installed]="Binaire installé : %s"
 MSG[m06_perf_installed]="Enveloppe performance-mode installée : %s"
@@ -365,7 +365,7 @@ MSG[m07_zswap_ostree]="Activation de zswap + mitigations=off via kernel args (rp
 MSG[m07_dry_reboot]="[DRY-RUN] Un reboot serait nécessaire (système immutable rpm-ostree)."
 MSG[m07_ostree_reboot]="Un reboot est nécessaire (système immutable rpm-ostree)."
 MSG[m07_rerun_after_reboot]="Relancez ce module après le reboot : il détectera que les kernel args sont déjà actifs."
-MSG[m07_var_not_btrfs_1]="/var n'est pas sur Btrfs sur ce système — la procédure officielle (swapfile Btrfs"
+MSG[m07_var_not_btrfs_1]="/var n'est pas sur Btrfs sur ce système - la procédure officielle (swapfile Btrfs"
 MSG[m07_var_not_btrfs_2]="dédié) ne s'applique pas telle quelle. Créez un swapfile classique manuellement,"
 MSG[m07_var_not_btrfs_3]="ou passez ce sous-module si vous n'êtes pas sur Bazzite/Btrfs."
 MSG[m07_dry_rm_swap]="[DRY-RUN] rm -rf /var/swap (si existant)"
@@ -385,17 +385,17 @@ MSG[m07_final_check]="Vérification finale :"
 MSG[m07_zswap_not_active]="zswap pas encore actif (reboot en attente ?)"
 MSG[m07_mangohud_title]="Installation de MangoHud (overlay FPS/temp/usage GPU-CPU)"
 MSG[m07_dry_mangohud_bazzite]="[DRY-RUN] MangoHud est généralement préinstallé sur Bazzite. Vérification : command -v mangohud || pkg_install mangohud"
-MSG[m07_dry_mangohud_steamos]="[DRY-RUN] MangoHud préinstallé sur SteamOS — skip installation"
+MSG[m07_dry_mangohud_steamos]="[DRY-RUN] MangoHud préinstallé sur SteamOS - skip installation"
 MSG[m07_mangohud_bazzite_check]="MangoHud est généralement préinstallé sur Bazzite. Vérification..."
 MSG[m07_mangohud_present]="MangoHud déjà présent."
-MSG[m07_mangohud_steamos]="MangoHud préinstallé sur SteamOS — skip installation"
+MSG[m07_mangohud_steamos]="MangoHud préinstallé sur SteamOS - skip installation"
 MSG[m07_mangohud_steam_hint]="Pour activer dans Steam : ajoutez 'mangohud %%command%%' aux options de lancement d'un jeu."
 MSG[m07_zswap_already]="zswap déjà activé au niveau kernel, passage direct à la création du swapfile."
 MSG[m07_zswap_other_distro_1]="Procédure officielle zswap+swapfile documentée pour Bazzite/rpm-ostree+Btrfs uniquement."
 MSG[m07_zswap_other_distro_2]="Sur %s : activez zswap via GRUB_CMDLINE_LINUX (zswap.enabled=1 zswap.max_pool_percent=%s zswap.compressor=%s)"
 MSG[m07_zswap_other_distro_3]="puis régénérez votre config bootloader (grub-mkconfig / bootctl / etc. selon votre setup), et créez un swapfile classique."
 MSG[m07_zswap_disabled]="ENABLE_ZSWAP=0 dans la config, étape ignorée."
-MSG[m07_zswap_zram_active]="zram fournit déjà le swap compressé sur ce système (%s) — zswap ignoré (les deux ensemble occasionneraient une double compression, au détriment des performances)."
+MSG[m07_zswap_zram_active]="zram fournit déjà le swap compressé sur ce système (%s) - zswap ignoré (les deux ensemble occasionneraient une double compression, au détriment des performances)."
 MSG[m07_mitig_title]="Désactivation des mitigations CPU (Spectre/Meltdown)"
 MSG[m07_mitig_warn_1]="Ceci réduit la protection contre certaines attaques locales (side-channel)."
 MSG[m07_mitig_warn_2]="Recommandé uniquement sur une machine de jeu dédiée, pas un poste multi-usage sensible."
@@ -409,7 +409,7 @@ MSG[m07_mitig_skipped]="DISABLE_CPU_MITIGATIONS=0 (ou absent), étape ignorée."
 MSG[m07_done]="Module 07 terminé."
 
 # ------------------------------------------------------------------
-# Module 08 — extras
+# Module 08 - extras
 # ------------------------------------------------------------------
 MSG[m08_title]="08 - Extras optionnels"
 MSG[m08_intro]="Cette section regroupe des extras optionnels évoqués dans les vidéos
@@ -470,7 +470,7 @@ MSG[m08_prompt]="Choix [1-3/q] : "
 MSG[m08_done]="Module 08 terminé."
 
 # ------------------------------------------------------------------
-# Module 09 — validation
+# Module 09 - validation
 # ------------------------------------------------------------------
 MSG[m09_title]="09 - Validation & Benchmark"
 MSG[m09_invalid_status]="Statut invalide pour report_result : %s"
@@ -480,18 +480,18 @@ MSG[m09_dry_cpu_cores]="[DRY-RUN] Vérification du nombre de cœurs CPU (attendu
 MSG[m09_t_cpu_cores_16]="CPU Cores (16 threads / 8 cœurs)"
 MSG[m09_threads_detected]="%s threads détectés"
 MSG[m09_t_cpu_cores_8]="CPU Cores (8 threads / 4 cœurs)"
-MSG[m09_threads_not_unlocked]="%s threads — déblocage 8 cœurs non appliqué (module 03)"
-MSG[m09_threads_bios_unlocked]="%s threads — déblocage 8 cœurs actif via le BIOS moddé (module 02)"
-MSG[m09_threads_bios_not_enabled]="%s threads — activez \"Unlock CPU cores\" dans le BIOS moddé"
+MSG[m09_threads_not_unlocked]="%s threads - déblocage 8 cœurs non appliqué (module 03)"
+MSG[m09_threads_bios_unlocked]="%s threads - déblocage 8 cœurs actif via le BIOS moddé (module 02)"
+MSG[m09_threads_bios_not_enabled]="%s threads - activez \"Unlock CPU cores\" dans le BIOS moddé"
 MSG[m09_t_cpu_cores]="CPU Cores"
-MSG[m09_threads_unexpected]="%s threads — inattendu"
+MSG[m09_threads_unexpected]="%s threads - inattendu"
 MSG[m09_dry_cpu_freq]="[DRY-RUN] Vérification de la fréquence CPU (config : %s MHz ±100 MHz)"
 MSG[m09_t_cpu_freq_near]="CPU Fréquence (proche de CPU_FREQ_MHZ)"
 MSG[m09_freq_target]="%s MHz sous charge (cible: %s MHz)"
 MSG[m09_t_cpu_freq_diff200]="CPU Fréquence (écart ≤ 200 MHz)"
 MSG[m09_t_cpu_freq_diff_gt200]="CPU Fréquence (écart > 200 MHz)"
 MSG[m09_freq_target_diff]="%s MHz (cible: %s MHz, écart: %s MHz)"
-MSG[m09_freq_under_target]="%s MHz sous charge (cible: %s MHz, écart: %s MHz) — OC non appliqué (module 05) ou throttle"
+MSG[m09_freq_under_target]="%s MHz sous charge (cible: %s MHz, écart: %s MHz) - OC non appliqué (module 05) ou throttle"
 MSG[m09_t_cpu_freq]="CPU Fréquence"
 MSG[m09_cpuinfo_unreadable]="Impossible de lire /proc/cpuinfo"
 MSG[m09_dry_gpu_cu]="[DRY-RUN] Vérification des CU GPU actives via bc250-cu-live-manager (config: %s)"
@@ -508,7 +508,7 @@ MSG[m09_t_service]="Service %s"
 MSG[m09_svc_active]="actif"
 MSG[m09_svc_enabled_inactive]="activé mais non actif (démarrage ?)"
 MSG[m09_svc_inactive]="inactif / non activé"
-MSG[m09_svc_bios_governs]="non requis — cœurs gérés par le BIOS moddé (module 02)"
+MSG[m09_svc_bios_governs]="non requis - cœurs gérés par le BIOS moddé (module 02)"
 MSG[m09_dry_vram]="[DRY-RUN] Vérification allocation VRAM BIOS (cible: %s Mo)"
 MSG[m09_t_vram_target]="BIOS VRAM (%s Mo)"
 MSG[m09_vram_detected]="%s Mo détectés"
@@ -522,7 +522,7 @@ MSG[m09_t_cpu_temp_ok]="Température CPU (≤ 85°C)"
 MSG[m09_t_gpu_temp_ok]="Température GPU (≤ 80°C)"
 MSG[m09_t_cpu_temp_high]="Température CPU (> 85°C)"
 MSG[m09_t_gpu_temp_high]="Température GPU (> 80°C)"
-MSG[m09_temp_check_cooling]="%s°C — vérifier refroidissement (module 01)"
+MSG[m09_temp_check_cooling]="%s°C - vérifier refroidissement (module 01)"
 MSG[m09_t_cpu_temp]="Température CPU"
 MSG[m09_t_gpu_temp]="Température GPU"
 MSG[m09_temp_not_detected]="Non détectée via sensors"
@@ -531,19 +531,19 @@ MSG[m09_sensors_missing]="Commande 'sensors' non disponible (lm-sensors non inst
 MSG[m09_dry_voltage]="[DRY-RUN] Vérification voltage CPU via bc250_smu_oc ou sensors (seuil dur: 1300 mV, tolérance ±50 mV vs CPU_VID_MV=%s)"
 MSG[m09_t_voltage_ok]="Voltage CPU (≤ 1300 mV, tolérance ±50 mV)"
 MSG[m09_t_voltage_danger]="Voltage CPU (> 1300 mV = DANGER)"
-MSG[m09_voltage_danger_msg]="%s mV (source: %s) — DÉPASSE LE SEUIL ABSOLU DE SÉCURITÉ"
+MSG[m09_voltage_danger_msg]="%s mV (source: %s) - DÉPASSE LE SEUIL ABSOLU DE SÉCURITÉ"
 MSG[m09_voltage_ok_msg]="%s mV (cible: %s mV, source: %s)"
 MSG[m09_t_voltage_diff]="Voltage CPU (écart > 50 mV vs config)"
 MSG[m09_voltage_diff_msg]="%s mV (cible: %s mV, écart: %s mV, source: %s)"
 MSG[m09_t_voltage]="Voltage CPU"
-MSG[m09_voltage_unreadable]="Voltage non lisible (bc250_smu_oc, bc250_detect.py, sensors Vcore) — vérifiez manuellement"
+MSG[m09_voltage_unreadable]="Voltage non lisible (bc250_smu_oc, bc250_detect.py, sensors Vcore) - vérifiez manuellement"
 MSG[m09_dry_gpu_freq]="[DRY-RUN] Vérification fréquence GPU via pp_dpm_sclk ou rocm-smi (cible: %s MHz ±100 MHz)"
 MSG[m09_t_gpu_freq_near]="Fréquence GPU (proche de GPU_FREQ_MHZ ±100 MHz)"
 MSG[m09_gpu_freq_msg]="%s MHz état max (cible: %s MHz, actuel: %s MHz)"
 MSG[m09_t_gpu_freq_diff]="Fréquence GPU (écart > 100 MHz vs config)"
 MSG[m09_gpu_freq_diff_msg]="%s MHz état max (cible: %s MHz, écart: %s MHz, actuel: %s MHz)"
 MSG[m09_t_gpu_freq]="Fréquence GPU"
-MSG[m09_gpu_freq_unreadable]="Non lisible (pp_dpm_sclk absent, rocm-smi absent) — vérifiez manuellement"
+MSG[m09_gpu_freq_unreadable]="Non lisible (pp_dpm_sclk absent, rocm-smi absent) - vérifiez manuellement"
 MSG[m09_stability_title]="Tests de stabilité (optionnels)"
 MSG[m09_dry_stability]="[DRY-RUN] Tests de stabilité : demande de confirmation simulée = OUI, durée = %ss"
 MSG[m09_yes_duration]="BC250_YES=1 : durée par défaut 300 s (recommandé)."
@@ -553,12 +553,14 @@ MSG[m09_t_cpu_stability]="Stabilité CPU (stress-ng %ss)"
 MSG[m09_t_gpu_stability]="Stabilité GPU (FurMark %ss)"
 MSG[m09_stress_cpu_start]="Lancement stress-ng CPU %ss (utilise tous les cœurs)..."
 MSG[m09_finished_ok]="Terminé sans erreur"
-MSG[m09_failed_unstable]="Échec ou interruption — instabilité détectée"
+MSG[m09_failed_unstable]="Échec ou interruption - instabilité détectée"
 MSG[m09_stress_ng_missing]="stress-ng non installé (pkg_install stress-ng pour l'ajouter)"
 MSG[m09_dry_furmark]="[DRY-RUN] Test GPU FurMark %ss"
 MSG[m09_furmark_start]="Lancement FurMark GPU %ss..."
+MSG[m09_gpu_furmark_vk]="FurMark 2.x : stress Vulkan via la démo furmark-vk (celle que MangoHud sait surligner - le -t a disparu en 2.x)"
+MSG[m09_furmark_v2_demo]="FurMark 2.x : plus de flag -t, on lance la démo de stress Vulkan furmark-vk à la place"
 MSG[m09_furmark_missing]="FurMark non installé, test GPU ignoré"
-MSG[m09_gpu_pair_mangohud]="Streng GPU jumelé avec MangoHud (overlay sclk/temp/VRAM en direct pendant le test — MangoHud est fourni par le module 07). Best-effort : si FurMark charge en OpenGL pur, pas d'overlay mais le stress reste lancé."
+MSG[m09_gpu_pair_mangohud]="Streng GPU jumelé avec MangoHud (overlay sclk/temp/VRAM en direct pendant le test - MangoHud est fourni par le module 07). Best-effort : si FurMark charge en OpenGL pur, pas d'overlay mais le stress reste lancé."
 MSG[m09_stability_skipped]="Tests de stabilité ignorés sur demande utilisateur."
 MSG[m09_skipped_user]="Ignoré (choix utilisateur)"
 MSG[m09_score_excellent]="EXCELLENT"
@@ -580,4 +582,4 @@ MSG[m09_reco_warn]="  • Des avertissements ont été émis :
     - GPU CU / Fréquence non conformes → revoyez modules 04, 05, 06
     - Outils manquants (sensors, FurMark, stress-ng)
       → installez-les via votre gestionnaire de paquets"
-MSG[m09_done]="Module 09 terminé (Score: %s%% — %sP/%sW/%sF)."
+MSG[m09_done]="Module 09 terminé (Score: %s%% - %sP/%sW/%sF)."

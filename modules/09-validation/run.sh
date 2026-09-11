@@ -548,20 +548,40 @@ if [[ "$run_stability" =~ $yes_re ]]; then
             fi
         done
 
+        # Les arguments de stress dépendent de la MAJEURE de FurMark :
+        #   - 1.x (binaire Geeks3D historique)  ->  FurMark -t <secondes>
+        #   - 2.x (moteur GeeXLab, ex. 2.10.2)  ->  furmark --demo furmark-vk
+        #     (le flag -t a été retiré en 2.x ; le stress Vulkan "furmark-vk"
+        #     est celui que MangoHud sait surligner).
+        gpu_stress_args=(-t "${stress_duration}")
+        if [[ "$("$gpu_stress_bin" --version 2>/dev/null)" == 2.* ]]; then
+            gpu_stress_args=(--demo furmark-vk)
+            log "$(t m09_furmark_v2_demo)"
+        fi
+
         if [[ -n "$gpu_stress_bin" ]]; then
+            # Args de stress selon la MAJEURE de FurMark (le -t a disparu en 2.x :
+            # le moteur 2.10 n'expose plus que --demo, avec le stress Vulkan
+            # "furmark-vk" — celui que MangoHud sait surligner).
+            gpu_stress_args=(-t "${stress_duration}")   # legacy 1.x (Geeks3D)
+            if "$gpu_stress_bin" --version 2>/dev/null | grep -qE "^2\.[0-9]+"; then
+                gpu_stress_args=(--demo furmark-vk)     # 2.x (GeeXLab engine)
+                log "$(t m09_gpu_furmark_vk)"
+            fi
+
             log "$(t m09_furmark_start "$stress_duration")"
             # Jumelage MangoHud : on voit sclk/temp/VRAM en direct pendant le
-            # test (module 07 l'installe). Best-effort — si FurMark charge en
-            # OpenGL pur l'overlay ne s'affiche pas, le stress lui reste lancé.
+            # test (module 07 l'installe). Best-effort — FurMark 1.x pur
+            # OpenGL peut priver l'overlay d'affichage, mais le stress tourne.
             if command -v mangohud &>/dev/null; then
                 log "$(t m09_gpu_pair_mangohud)"
-                if mangohud "$gpu_stress_bin" -t "${stress_duration}" 2>/dev/null; then
+                if mangohud "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
                     report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
                 else
                     report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
                 fi
             else
-                if "$gpu_stress_bin" -t "${stress_duration}" 2>/dev/null; then
+                if "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
                     report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
                 else
                     report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
