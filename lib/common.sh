@@ -94,6 +94,22 @@ find_drm_sclk() {
 }
 
 # ------------------------------------------------------------------
+# Chemin du fichier mem_info_vram_total (octets) du GPU AMD, auto-détecté
+# comme find_drm_sclk (ne pas hardcoder card0/card1). Vide (rc=1) si absent.
+# ------------------------------------------------------------------
+find_drm_vram_total() {
+    local card f
+    for card in /sys/class/drm/card*/; do
+        f="${card}device/mem_info_vram_total"
+        if [[ -r "$f" ]]; then
+            printf '%s' "$f"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# ------------------------------------------------------------------
 # Détection de distribution / gestionnaire de paquets
 # ------------------------------------------------------------------
 # Renvoie l'une de : bazzite-ostree | fedora-ostree | fedora | arch | debian | steamos | unknown

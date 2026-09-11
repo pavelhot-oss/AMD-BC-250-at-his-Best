@@ -16,10 +16,62 @@ Toolkit to unlock/optimize AMD BC-250 A0 (PCI 1002:13FE, 40 CU) on Linux.
 - `bash -n <every changed .sh>` (shellcheck is NOT installed/required)
 - `bash tools/check-i18n.sh` -> must end `OK: 0 errors, 0 warning(s)`
 
+## Module 09 validation notes (learned 2026-09-11)
+- **CPU frequency must be measured UNDER LOAD, not at idle.** P-states drop
+  the BC-250 CPU to ~950-1000 MHz at rest, so a naive idle read vs
+  `CPU_FREQ_MHZ=3850` gives a huge (false) deviation. `measure_cpu_freq()` in
+  the module spins one core for ~1 s (`stress-ng --cpu 1` if present, else a
+  plain busy loop) then returns the MAX of
+  `/sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq` (fallback
+  `/proc/cpuinfo`), e.g. ~3842 MHz under load vs ~954 idle. Same reasoning for
+  GPU: the check compares the TOP supported sclk state in `pp_dpm_sclk`, not
+  the idle-current state (~300 MHz).
+- **BIOS-governed cores**: when `logs/bios_flashed.flag` exists (BIOS unlocked
+  the cores), `bc250-core-unlock.service` is reported "not required" instead
+  of failing, and the cores PASS message credits the BIOS mod, not module 03.
+  **The flag alone is NOT reliable** — module 02 only writes it on an interactive
+  flash confirmation, so a manual flash leaves no flag. Module 09 therefore
+  also sets `BIOS_GOVERN=1` via a heuristic: `nproc == 16` AND
+  `bc250-core-unlock.service` not enabled (nobody can have 16 threads at boot
+  without either the BIOS or that service having been applied).
+- **pp_dpm_sclk is NOT sorted and the first number is the state INDEX, not the
+  frequency** (e.g. `0: 1000Mhz`, `1: 23Mhz *`, `2: 2000Mhz` — 2000 is max but
+  only coincidentally last). Naive `grep -oE '[0-9]+' | head -1` returns the
+  index → "2" instead of "2000". Use `sclk_freq_mhz()` in module 09 (matches
+  `[0-9]+ ?M[hH]z`; tolerant of rocm-smi's "2000 MHz" space).
+- **GPU CU count**: the cu-live-manager dashboard title contains "BC-250 CU
+  Dashboard", so a generic `[0-9]+ *CU` grep returns **250** (from "BC-250
+  CU"), not the 40 CUs. Parse the `CUs active & routed : NN/40` line (or the
+  dmesg `active_cu_number=NN` line in `module_status`) instead. CU/status
+  requires root (UMR); module 09 run unprivileged can't see the dashboard.
+- **VRAM**: reliable source is sysfs
+  `/sys/class/drm/card*/device/mem_info_vram_total` (bytes;
+  `536870912` = 512 MiB on this host) via `find_drm_vram_total()` added to
+  `lib/common.sh`. The old lspci heuristic hardcoded slot `0000:05:00.0`
+  (real: `01:00.0`) so it never matched.
+- **CPU temp via `sensors`**: value is on the `Tctl:` line, NOT on the chip
+  block header line (`k10temp-pci-00c3`), so anchoring at `^k10temp` missed it.
+  Anchor on `^(Tctl|Tdie|Tccd|Package) ... °c`. GPU on `^(edge|junction)`.
+- **CPU VID**: not exposed by `sensors` (only GPU `vddgfx` + NB `vddnb` — do
+  NOT treat those as CPU VID). Real source is the SMU
+  `q3_0x36_get_current_cpu_voltage()` from the vendored `bc250_smu_oc` package
+  (via `measure_cpu_voltage_mv()` in module 09), which needs root. The old code
+  probed a nonexistent `bc250_smu_oc` binary and `bc250_detect.py --voltage`
+  (no such flag) and silently failed.
+- **Service unit names are real unit names**: `bc250-core-unlock.service`,
+  `bc250-smu-oc.service`, `cyan-skillfish-governor-smu.service` (the GPU
+  governor is `cyan-skillfish-governor-smu`, NOT `cyan-skillfish-governor` —
+  that was an always-failing check).
+
 ## Hardware facts (learned 2026-09)
 - The BC-250 GPU is DRM **card1** (not card0) on this host. NEVER hardcode
   `card0`: use `find_drm_sclk()` from `lib/common.sh` (reads
   `/sys/class/drm/card*/device/pp_dpm_sclk`).
+- FLASH CONFIRMED WORKING (2026-09-11 evening, user report): after the
+  MeiMeiDXE flash + CMOS clear, the new BIOS's settings are visible and we now
+  have **8 cores (16 threads) at boot** — the hardware unlock is in place, so
+  the software unlock (module 03) and its `bc250-core-unlock.service` are no
+  longer needed (module 09 knows this via `logs/bios_flashed.flag`).
 - Current BIOS = **P3.00** (12/09/2021, AMI). All 16 flash-ROM images in
   `vendor/bc250-uefi-menu/Firmware/Firmware.7z` are built on BIOS 3.00.
 - Software CPU unlock (`bc250-unlock-cores.py`, SMN 0x5A870 0x77->0xFF) is
