@@ -236,6 +236,10 @@ MSG[m02_reminder_2]="\"Unlock CPU cores\" и установите VRAM на %s �
 MSG[m02_flashed_q]="Прошивка BIOS выполнена и опция 'Unlock CPU cores' включена в BIOS?"
 MSG[m02_flag_created]="Флаг bios_flashed.flag создан — модуль 03 обнаружит модифицированный BIOS."
 MSG[m02_flag_not_created]="Флаг не создан. Модуль 03 попробует программную разблокировку (не сохраняется)."
+MSG[m02_bios_check]="Текущая версия BIOS: %s (образы прошивки основаны на BIOS 3.00)"
+MSG[m02_extract_note]="На этом устройстве нет распаковщика 7z (7z/7za/bsdtar) — Firmware.7z скопирован в корень флешки. Распакуйте его там через утилиту UEFI (опция 4) перед прошивкой."
+MSG[m02_backup_hint]="В меню UEFI: СНАЧАЛА выполните [menu 0f], чтобы экспортировать текущую ROM в \\Firmware_Backup\\bc250-backup.rom (восстановление через [menu fr]), ЗАТЕМ прошейте выбранный профиль."
+MSG[m02_flag_not_auto]="BC250_YES=1: bios_flashed.flag НЕ создан. Прошивка — реальный физический шаг — запустите интерактивно и подтвердите, когда новый BIOS действительно установлен."
 
 # ------------------------------------------------------------------
 # Module 03 — CPU core unlock
@@ -535,7 +539,7 @@ MSG[m09_t_voltage_diff]="Напряжение CPU (отклонение > 50 м�
 MSG[m09_voltage_diff_msg]="%s мВ (цель: %s мВ, отклонение: %s мВ, источник: %s)"
 MSG[m09_t_voltage]="Напряжение CPU"
 MSG[m09_voltage_unreadable]="Напряжение не читается (bc250_smu_oc, bc250_detect.py, sensors Vcore) — проверьте вручную"
-MSG[m09_dry_gpu_freq]="[DRY-RUN] Проверка частоты GPU через /sys/class/drm/card0/device/pp_dpm_sclk или rocm-smi (цель: %s МГц ±100 МГц)"
+MSG[m09_dry_gpu_freq]="[DRY-RUN] Проверка частоты GPU через pp_dpm_sclk или rocm-smi (цель: %s МГц ±100 МГц)"
 MSG[m09_t_gpu_freq_near]="Частота GPU (GPU_FREQ_MHZ ±100 МГц)"
 MSG[m09_gpu_freq_msg]="%s МГц (цель: %s МГц, источник: %s)"
 MSG[m09_t_gpu_freq_diff]="Частота GPU (отклонение > 100 МГц)"

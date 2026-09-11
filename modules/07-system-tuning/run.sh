@@ -2,6 +2,7 @@
 # Module 07 — Réglages système : zswap (anti-crash RAM/VRAM), mitigations
 # CPU désactivées, MangoHud pour le monitoring en jeu.
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m07_title)"

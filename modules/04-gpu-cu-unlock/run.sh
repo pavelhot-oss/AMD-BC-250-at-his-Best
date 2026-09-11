@@ -9,6 +9,7 @@
 # disponible et documentée plus bas pour les cartes dont la harvest map
 # n'est pas symétrique (nécessite alors du masquage sélectif de WGP).
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m04_title)"

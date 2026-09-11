@@ -3,6 +3,7 @@
 # Étapes PHYSIQUES : ce module n'exécute rien sur la carte, il affiche
 # une checklist de validation avant de continuer vers les modules logiciels.
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m01_title)"

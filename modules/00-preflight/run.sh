@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Module 00 — Preflight : vérifie matériel, distro et dépendances de base.
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m00_title)"

@@ -4,6 +4,7 @@
 # ⚠️  Ne JAMAIS dépasser 1300 mV de Vid CPU. Un overclock de fréquence sans
 #     undervolt correspondant peut détruire le CPU (Vid non plafonné).
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m05_title)"

@@ -2,6 +2,7 @@
 # Module 08 — Extras optionnels (non essentiels, purement informatif +
 # quelques installeurs légers à la demande). Sous-menu interactif.
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m08_title)"

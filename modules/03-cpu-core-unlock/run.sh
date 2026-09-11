@@ -6,6 +6,7 @@
 # boot. On installe donc un service systemd oneshot qui le réapplique à
 # CHAQUE démarrage (couvre les deux cas uniformément).
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 title "$(t m03_title)"

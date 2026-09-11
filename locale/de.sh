@@ -236,6 +236,10 @@ MSG[m02_reminder_2]="\"Unlock CPU cores\" zu aktivieren und das VRAM auf %s MB z
 MSG[m02_flashed_q]="Ist der BIOS-Flash abgeschlossen und die Option 'Unlock CPU cores' im BIOS aktiviert?"
 MSG[m02_flag_created]="Flag bios_flashed.flag erstellt — Modul 03 wird das modifizierte BIOS erkennen."
 MSG[m02_flag_not_created]="Flag nicht erstellt. Modul 03 wird die Software-Freischaltung versuchen (flüchtig)."
+MSG[m02_bios_check]="Aktuelle BIOS-Version: %s (die Flash-Images basieren auf BIOS 3.00)"
+MSG[m02_extract_note]="Kein 7z-Extraktor (7z/7za/bsdtar) auf diesem System — Firmware.7z wurde in den Sticker-Root kopiert. Entpacken Sie ihn vor dem Flashen über das UEFI-Tool (Option 4)."
+MSG[m02_backup_hint]="Im UEFI-Menü: führen Sie ZUERST [menu 0f] aus, um Ihre aktuelle ROM als \\Firmware_Backup\\bc250-backup.rom zu exportieren (Wiederherstellung mit [menu fr]), DANN flashen Sie Ihr Profil."
+MSG[m02_flag_not_auto]="BC250_YES=1: bios_flashed.flag wurde NICHT erstellt. Das Flashen ist ein echter physischer Schritt — führen Sie es interaktiv aus und bestätigen Sie, sobald das neue BIOS wirklich aktiv ist."
 
 # ------------------------------------------------------------------
 # Modul 03 — CPU-Kern-Freischaltung
@@ -536,7 +540,7 @@ MSG[m09_t_voltage_diff]="CPU-Spannung (Abweichung > 50 mV)"
 MSG[m09_voltage_diff_msg]="%s mV (Ziel: %s mV, Abweichung: %s mV, Quelle: %s)"
 MSG[m09_t_voltage]="CPU-Spannung"
 MSG[m09_voltage_unreadable]="Spannung nicht lesbar (bc250_smu_oc, bc250_detect.py, sensors Vcore) — manuell prüfen"
-MSG[m09_dry_gpu_freq]="[DRY-RUN] Prüfung der GPU-Frequenz über /sys/class/drm/card0/device/pp_dpm_sclk oder rocm-smi (Ziel: %s MHz ±100 MHz)"
+MSG[m09_dry_gpu_freq]="[DRY-RUN] Prüfung der GPU-Frequenz über pp_dpm_sclk oder rocm-smi (Ziel: %s MHz ±100 MHz)"
 MSG[m09_t_gpu_freq_near]="GPU-Frequenz (GPU_FREQ_MHZ ±100 MHz)"
 MSG[m09_gpu_freq_msg]="%s MHz (Ziel: %s MHz, Quelle: %s)"
 MSG[m09_t_gpu_freq_diff]="GPU-Frequenz (Abweichung > 100 MHz)"
