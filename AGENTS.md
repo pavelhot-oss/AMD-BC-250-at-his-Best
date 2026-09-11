@@ -36,11 +36,27 @@ Toolkit to unlock/optimize AMD BC-250 A0 (PCI 1002:13FE, 40 CU) on Linux.
 - `sdb2`: 21.2 GiB FAT32 `BC250FLASH`, ready to flash. Payload: `EFI/BOOT/`
   (shell + `AfuEfix64.efi`), `menu.nsh`, `startup.nsh`, `reboot-uefi.sh`,
   16 ROMs flattened into `Firmware/`.
+- `menu.nsh` and `startup.nsh` now AUTO-DETECT which `fsN:` holds
+  `AfuEfix64.efi` (scans fs0:..fs9: into `%UF%`). Never re-introduce
+  hardcoded `fs0:`/`fs1:` paths — with two partitions (NTFS sdb1 + FAT32
+  sdb2) the UEFI shell maps the FAT32 payload beyond fs1:, which broke
+  flashing (fixed 2026-09-11).
 - Flash sequence on the BC-250: boot USB -> UEFI shell menu -> `menu 0f`
   (backup current ROM, `menu fr` restores) -> flash the MeiMeiDXE v2.1
   profile -> CMOS clear -> in new BIOS enable "Unlock CPU cores" + set VRAM
   512 MB (`BIOS_TARGET_VRAM_MB`). After success, run module 02 interactively
   to create `logs/bios_flashed.flag`.
+
+## Local git state (session 2026-09-11)
+- Branch `i18n`; ahead of `origin/i18n` by 6 commits.
+- Last commits:
+  - `3616ca1` parent: `vendor/bc250-uefi-menu` submodule -> fs auto-detect.
+  - `778f693` docs: AGENTS.md session state + captured USB repartition log.
+  - Submodule `vendor/bc250-uefi-menu` committed on detached `HEAD`
+    `038bcde` (based on `v0.5.0` tag, `f9c1d83`), identity Pavel N
+    <pavelhot@gmail.com> used because the submodule had no author config.
+- Working tree: clean except untracked `vendor/bc250_smu_oc` content; do not
+  commit that unless intentional.
 
 ## Commands/roles note
 This host is Arch; `sudo` has a password (no passwordless), `ntfsresize`
