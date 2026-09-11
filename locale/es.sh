@@ -570,6 +570,7 @@ MSG[m09_stress_ng_missing]="stress-ng no instalado (pkg_install stress-ng para a
 MSG[m09_dry_furmark]="[DRY-RUN] Prueba GPU FurMark %ss"
 MSG[m09_furmark_start]="Iniciando FurMark GPU %ss..."
 MSG[m09_furmark_missing]="FurMark no instalado, prueba de GPU omitida"
+MSG[m09_gpu_pair_mangohud]="Estrés de GPU emparejado con MangoHud (overlay en vivo de sclk/temp/VRAM durante la prueba — MangoHud lo instala el módulo 07). Best-effort: si FurMark carga OpenGL puro el overlay no aparece, pero el estrés sigue ejecutándose."
 MSG[m09_stability_skipped]="Pruebas de estabilidad omitidas a petición del usuario."
 MSG[m09_skipped_user]="Omitido (elección del usuario)"
 MSG[m09_score_excellent]="EXCELENTE"

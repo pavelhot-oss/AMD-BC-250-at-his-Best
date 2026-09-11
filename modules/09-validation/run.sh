@@ -537,12 +537,35 @@ if [[ "$run_stability" =~ $yes_re ]]; then
         log "$(t m09_dry_furmark "$stress_duration")"
         report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "[DRY-RUN]"
     else
-        if command -v FurMark &>/dev/null; then
+        # Détecte à la fois le binaire officiel "FurMark" (archive Geeks3D)
+        # et celui de l'AUR "furmark" (minuscule) : ne plus ancrer sur un seul
+        # casse.
+        gpu_stress_bin=""
+        for _cand in FurMark furmark FurMark-gui furmark-gui; do
+            if command -v "$_cand" &>/dev/null; then
+                gpu_stress_bin="$_cand"
+                break
+            fi
+        done
+
+        if [[ -n "$gpu_stress_bin" ]]; then
             log "$(t m09_furmark_start "$stress_duration")"
-            if FurMark -t "${stress_duration}" 2>/dev/null; then
-                report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
+            # Jumelage MangoHud : on voit sclk/temp/VRAM en direct pendant le
+            # test (module 07 l'installe). Best-effort — si FurMark charge en
+            # OpenGL pur l'overlay ne s'affiche pas, le stress lui reste lancé.
+            if command -v mangohud &>/dev/null; then
+                log "$(t m09_gpu_pair_mangohud)"
+                if mangohud "$gpu_stress_bin" -t "${stress_duration}" 2>/dev/null; then
+                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
+                else
+                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
+                fi
             else
-                report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
+                if "$gpu_stress_bin" -t "${stress_duration}" 2>/dev/null; then
+                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
+                else
+                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
+                fi
             fi
         else
             report_result "$(t m09_t_gpu_stability "$stress_duration")" "warn" "$(t m09_furmark_missing)"

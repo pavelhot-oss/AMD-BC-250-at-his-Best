@@ -561,6 +561,7 @@ MSG[m09_stress_ng_missing]="stress-ng not installed (pkg_install stress-ng to ad
 MSG[m09_dry_furmark]="[DRY-RUN] FurMark GPU test %ss"
 MSG[m09_furmark_start]="Starting FurMark GPU %ss..."
 MSG[m09_furmark_missing]="FurMark not installed, GPU test skipped"
+MSG[m09_gpu_pair_mangohud]="GPU stress paired with MangoHud (live sclk/temp/VRAM overlay while the test runs — module 07 provides it). Best-effort: if FurMark loads pure OpenGL the overlay won't draw, but the stress itself keeps running."
 MSG[m09_stability_skipped]="Stability tests skipped at user request."
 MSG[m09_skipped_user]="Skipped (user choice)"
 MSG[m09_score_excellent]="EXCELLENT"
