@@ -47,9 +47,21 @@ Toolkit to unlock/optimize AMD BC-250 A0 (PCI 1002:13FE, 40 CU) on Linux.
   512 MB (`BIOS_TARGET_VRAM_MB`). After success, run module 02 interactively
   to create `logs/bios_flashed.flag`.
 
+## UEFI shell scripting (learned 2026-09-11, after a bricked flash attempt)
+- The EDK2 UEFI shell does NOT support `for ... do ( ... )` blocks. A script
+  line like `for %i in (...) do (` dies with `Too many arguments. No matching
+  'EndFor' for statement found line N`. Valid syntax is a bare space-separated
+  set: `for %i in 0 1 2 3 ... 9` ... body ... `endfor`, each keyword on its own
+  line (no `do (`, no closing paren). Do NOT put parens around the `in` set —
+  EDK2 treats `(0`/`9)` as literal items, so `%i` would include the parens.
+  `if ... then` ... `endif` nest fine inside the loop.
+
 ## Local git state (session 2026-09-11)
-- Branch `i18n`; ahead of `origin/i18n` by 6 commits.
+- Branch `i18n`; ahead of `origin/i18n` by 7 commits.
 - Last commits:
+  - Submodule `vendor/bc250-uefi-menu` fixed on detached `HEAD` after
+    `3616ca1`'s fs auto-detect broke flashing: `menu.nsh:7` used the
+    unsupported `for ... do (` form -> replaced with `for/endfor` syntax.
   - `3616ca1` parent: `vendor/bc250-uefi-menu` submodule -> fs auto-detect.
   - `778f693` docs: AGENTS.md session state + captured USB repartition log.
   - Submodule `vendor/bc250-uefi-menu` committed on detached `HEAD`
