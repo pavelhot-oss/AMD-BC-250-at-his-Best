@@ -76,6 +76,24 @@ require_bc250() {
 }
 
 # ------------------------------------------------------------------
+# Détection du chemin pp_dpm_sclk du GPU AMD. L'index DRM (card0, card1, …)
+# varie selon la présence d'autres cartes (IGP, …) : on parcourt tous les
+# /sys/class/drm/card*/ et on renvoie la première entrée lisible. Retourne
+# vide (rc=1) si aucun chemin n'est trouvé.
+# ------------------------------------------------------------------
+find_drm_sclk() {
+    local card p
+    for card in /sys/class/drm/card*/; do
+        p="${card}device/pp_dpm_sclk"
+        if [[ -r "$p" ]]; then
+            printf '%s' "$p"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# ------------------------------------------------------------------
 # Détection de distribution / gestionnaire de paquets
 # ------------------------------------------------------------------
 # Renvoie l'une de : bazzite-ostree | fedora-ostree | fedora | arch | debian | steamos | unknown

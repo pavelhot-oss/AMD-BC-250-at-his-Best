@@ -3,6 +3,7 @@
 # Lance une batterie de tests automatisés pour valider l'état du système après
 # installation complète de bc250-beast.
 set -uo pipefail
+BC250_ROOT="${BC250_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "${BC250_ROOT}/lib/common.sh"
 
 require_bc250
@@ -306,9 +307,10 @@ else
     current_gpu_freq=0
     gpu_freq_source=""
 
-    # Essayer via pp_dpm_sclk (kernel AMDGPU)
-    dpm_sclk="/sys/class/drm/card0/device/pp_dpm_sclk"
-    if [[ -r "$dpm_sclk" ]]; then
+    # Essayer via pp_dpm_sclk (kernel AMDGPU) — auto-détection du card*
+    # (l'index DRM n'est pas toujours card0, ex: card1 quand un IGP est présent)
+    dpm_sclk="$(find_drm_sclk)"
+    if [[ -n "$dpm_sclk" ]]; then
         # Format typique: lignes avec "0: 300Mhz", "1: 2000Mhz *", l'étoile = actuel
         current_line=$(grep '\*' "$dpm_sclk" 2>/dev/null || true)
         if [[ -n "$current_line" ]]; then
