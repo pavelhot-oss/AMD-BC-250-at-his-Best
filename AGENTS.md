@@ -57,7 +57,7 @@ Toolkit to unlock/optimize AMD BC-250 A0 (PCI 1002:13FE, 40 CU) on Linux.
   `if ... then` ... `endif` nest fine inside the loop.
 
 ## Local git state (session 2026-09-11)
-- Branch `i18n`; ahead of `origin/i18n` by 7 commits.
+- Branch `i18n`; ahead of `origin/i18n` by 8 commits.
 - Last commits:
   - Submodule `vendor/bc250-uefi-menu` fixed on detached `HEAD` after
     `3616ca1`'s fs auto-detect broke flashing: `menu.nsh:7` used the
