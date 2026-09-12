@@ -573,19 +573,38 @@ if [[ "$run_stability" =~ $yes_re ]]; then
             # Jumelage MangoHud : on voit sclk/temp/VRAM en direct pendant le
             # test (module 07 l'installe). Best-effort — FurMark 1.x pur
             # OpenGL peut priver l'overlay d'affichage, mais le stress tourne.
-            if command -v mangohud &>/dev/null; then
-                log "$(t m09_gpu_pair_mangohud)"
-                if mangohud "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
-                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
+            if graphical_session_env; then
+                # Le stress tourne dans la SESSION graphique du vrai
+                # utilisateur (pas root sans DISPLAY) : FurMark peut ouvrir
+                # son dépôt Vulkan/OpenGL et MangoHud sait le surligner.
+                local _sfx_user _sfx_pfx=()
+                _sfx_user="${GX_USER:-}"
+                [[ -n "$_sfx_user" ]] && _sfx_pfx=(runuser -u "$_sfx_user" -- env "${GX_ENV[@]}")
+                if (( GX_DISPLAY_FOUND == -social
+                1 )); then
+                    if command -v mangohud &>/dev/null; then
+                        log "$(t m09_gpu_pair_mangohud)"
+                        if "${_sfx_pfx[@]}" mangohud "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
+                            report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
+                        else
+                            report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
+                        fi
+                    else
+                        if "${_sfx_pfx[@]}" "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
+                            report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
+                        else
+                            report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
+                        fi
+                    fi
                 else
-                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
+                    # Pas de session graphique détectable (SSH/headless) :
+                    # un stress FurMark sans DISPLAY ne peut pas démarrer, ce
+                    # n'est PAS une instabilité — on signale un warn, pas un
+                    # FAIL.
+                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "warn" "$(t m09_no_graphical_session)"
                 fi
             else
-                if "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
-                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "pass" "$(t m09_finished_ok)"
-                else
-                    report_result "$(t m09_t_gpu_stability "$stress_duration")" "fail" "$(t m09_failed_unstable)"
-                fi
+                report_result "$(t m09_t_gpu_stability "$stress_duration")" "warn" "$(t m09_no_graphical_session)"
             fi
         else
             report_result "$(t m09_t_gpu_stability "$stress_duration")" "warn" "$(t m09_furmark_missing)"

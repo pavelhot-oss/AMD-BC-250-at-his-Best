@@ -561,6 +561,7 @@ MSG[m09_gpu_furmark_vk]="FurMark 2.x : stress Vulkan via la démo furmark-vk (ce
 MSG[m09_furmark_v2_demo]="FurMark 2.x : plus de flag -t, on lance la démo de stress Vulkan furmark-vk à la place"
 MSG[m09_furmark_missing]="FurMark non installé, test GPU ignoré"
 MSG[m09_gpu_pair_mangohud]="Streng GPU jumelé avec MangoHud (overlay sclk/temp/VRAM en direct pendant le test - MangoHud est fourni par le module 07). Best-effort : si FurMark charge en OpenGL pur, pas d'overlay mais le stress reste lancé."
+MSG[m09_no_graphical_session]="Aucune session graphique avec client d'affichage trouvée (headless/SSH ?). Test de stress FurMark ignoré - système considéré valide."
 MSG[m09_stability_skipped]="Tests de stabilité ignorés sur demande utilisateur."
 MSG[m09_skipped_user]="Ignoré (choix utilisateur)"
 MSG[m09_score_excellent]="EXCELLENT"

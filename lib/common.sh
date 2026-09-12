@@ -168,6 +168,120 @@ maybe_prompt_reboot() {
 }
 
 # ------------------------------------------------------------------
+# Session graphique réelle (helper pour les stress GUI)
+# ------------------------------------------------------------------
+# Quand les modules tournent sous sudo/root (ex. `sudo ./install.sh --module
+# 09`), FurMark + MangoHud héritent d'un environnement SANS display :
+# root n'a ni DISPLAY ni XAUTHORITY ni accès au socket Wayland de l'utilisateur
+# graphique — c'est la cause du `cannot open default display!` immédiat =
+# stress GPU "terminé en 0,5 s" => faussement marqué instable.
+#
+# graphical_session_env : détecte le vrai utilisateur graphique (celui qui a
+# langé la session X/Wayland) et reconstruit son environnement d'affichage.
+# Best-effort : si aucune session graphique n'est trouvée (SSH/headless), la
+# fonction retourne 1 et le module concerné le signale en "warn", il ne
+# fabrique pas un grand FAIL.
+#
+# Usage dans un module :
+#   if graphical_session_env; then
+#       log "stress GPU dans la session de ${GX_USER} ($DISPLAY)"
+#       runuser -u "$GX_USER" -- env "${GX_ENV[@]}" mangohud "$bin" ... 
+#   else
+#       report_result "..." "warn" "pas de session graphique (headless/SSH)"
+#   fi
+# Variables de sortie : GX_USER, GX_ENV (tableau KEY=VALUE à injecter),
+# GX_DISPLAY_FOUND (0/1).
+# ------------------------------------------------------------------
+GX_USER=""
+GX_DISPLAY_FOUND=0
+
+graphical_session_env() {
+    GX_USER=""
+    GX_ENV=()
+    GX_DISPLAY_FOUND=0
+
+    # L'utilisateur graphique = celui qui a lancé sudo (jamais root).
+    local _gx_real_user="${SUDO_USER:-${USER:-}}"
+    if [[ -z "$_gx_real_user" || "$_gx_real_user" == "root" ]]; then
+        # Dernier recours : le plus récent propriétaire d'un /run/user/<uid>
+        # (artefact de session graphique obligatoire sous Wayland/X).
+        local _uid _pe
+        for _uid in $(find /run/user -maxdepth 1 -mindepth 1 -type d -printf '%f ' 2>/dev/null); do
+            _pe=$(getent passwd "$_uid" 2>/dev/null | cut -d: -f1)
+            [[ -z "$_pe" || "$_pe" == "root" ]] && continue
+            _gx_real_user="$_pe"
+            break
+        done
+    fi
+    [[ -z "$_gx_real_user" || "$_gx_real_user" == "root" ]] && return 1
+
+    local _gx_uid _runtime _sock _pid _display _wayland _xauth
+    _gx_uid="$(id -u "$_gx_real_user" 2>/dev/null)" || return 1
+    _runtime="/run/user/${_gx_uid}"
+
+    # Preuve qu'il existe une vraie session graphique : un processus de
+    # l'utilisateur avec DISPLAY/WAYLAND_DISPLAY dans /proc/[...]/environ
+    # (plutôt que de deviner :0).
+    local _cand
+    for _pid in $(pgrep -u "$_gx_uid" 2>/dev/null); do
+        _display="$(tr '\0' '\n' < "/proc/${_pid}/environ" 2>/dev/null | sed -n 's/^DISPLAY=//p' | head -1)"
+        _wayland="$(tr '\0' '\n' < "/proc/${_pid}/environ" 2>/dev/null | sed -n 's/^WAYLAND_DISPLAY=//p' | head -1)"
+        if [[ -n "$_display" || -n "$_wayland" ]]; then
+            GX_USER="$_gx_real_user"
+            GX_DISPLAY_FOUND=1
+            break
+        fi
+    done
+
+    # Même sans process visible (session vide), on s'appuie sur les sockets :
+    # le display peut encore être mappé via le socket Wayland du XDG_RUNTIME.
+    local _wsock
+    if (( GX_DISPLAY_FOUND == 0 )); then
+        _wsock=$(find "$_runtime" -maxdepth 1 -name 'wayland-*' -printf '%f\n' 2>/dev/null | head -1)
+        if [[ -n "$_wsock" && -S "$_runtime/$_wsock" ]]; then
+            GX_USER="$_gx_real_user"
+            GX_DISPLAY_FOUND=1
+        fi
+    fi
+
+    (( GX_DISPLAY_FOUND == 0 )) && return 1
+
+    # Reconstruit l'environnement d'affichage à injecter dans le stress.
+    GX_ENV=()
+    if [[ -n "$_display" ]]; then
+        GX_ENV+=(DISPLAY="$_display")
+    else
+        GX_ENV+=(DISPLAY=":0")
+    fi
+    if [[ -n "$_wayland" ]]; then
+        GX_ENV+=(WAYLAND_DISPLAY="$_wayland")
+    fi
+    GX_ENV+=(XDG_RUNTIME_DIR="$_runtime")
+    local _gx_sess _gx_stype
+    _gx_sess="$(loginctl | awk -v u="$_gx_real_user" '$1 ~ /^[0-9]+/ && $3==u {print $1; exit}' 2>/dev/null)"
+    _gx_stype="$(loginctl show-session "$_gx_sess" 2>/dev/null | sed -n 's/^Type=//p')"
+    if [[ -n "$_gx_stype" ]]; then
+        GX_ENV+=(XDG_SESSION_TYPE="$_gx_stype")
+    fi
+
+    # XAUTHORITY : on ne peut pas deviner le fichier ; on refile celui du
+    # processus candidat s'il en avait un, sinon le ~/.Xauthority de
+    # l'utilisateur (best-effort).
+    for _pid in $(pgrep -u "$_gx_uid" 2>/dev/null); do
+        _xauth="$(tr '\0' '\n' < "/proc/${_pid}/environ" 2>/dev/null | sed -n 's/^XAUTHORITY=//p' | head -1)"
+        if [[ -n "$_xauth" ]]; then
+            GX_ENV+=(XAUTHORITY="$_xauth")
+            break
+        fi
+    done
+    if [[ -z "$(printf '%s\n' "${GX_ENV[@]}" | grep -q '^XAUTHORITY=' && echo found)" ]] && \
+       [[ -f "/home/$_gx_real_user/.Xauthority" ]]; then
+        GX_ENV+=(XAUTHORITY="/home/$_gx_real_user/.Xauthority")
+    fi
+    return 0
+}
+
+# ------------------------------------------------------------------
 # Chargement de la config
 # ------------------------------------------------------------------
 # Au premier lancement, copie l'exemple dans la langue active s'il existe

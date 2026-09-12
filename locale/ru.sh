@@ -568,6 +568,7 @@ MSG[m09_gpu_furmark_vk]="FurMark 2.x: стресс Vulkan через демо fu
 MSG[m09_furmark_v2_demo]="FurMark 2.x: флага -t больше нет, вместо него запускается Vulkan-демо furmark-vk"
 MSG[m09_furmark_missing]="FurMark не установлен, тест GPU пропущен"
 MSG[m09_gpu_pair_mangohud]="Стресс GPU в паре с MangoHud (живой оверлей sclk/темп/VRAM во время теста - MangoHud ставит модуль 07). Best-effort: если FurMark грузит чистый OpenGL, оверлей не покажется, но стресс всё равно идёт."
+MSG[m09_no_graphical_session]="Графическая сессия с клиентом отображения не найдена (headless/SSH?). Тест стресса FurMark пропущен - система считается валидной."
 MSG[m09_stability_skipped]="Тесты стабильности пропущены по запросу пользователя."
 MSG[m09_skipped_user]="Пропущено (выбор пользователя)"
 MSG[m09_score_excellent]="ОТЛИЧНО"
