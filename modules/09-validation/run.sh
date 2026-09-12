@@ -577,11 +577,10 @@ if [[ "$run_stability" =~ $yes_re ]]; then
                 # Le stress tourne dans la SESSION graphique du vrai
                 # utilisateur (pas root sans DISPLAY) : FurMark peut ouvrir
                 # son dépôt Vulkan/OpenGL et MangoHud sait le surligner.
-                local _sfx_user _sfx_pfx=()
+                _sfx_user _sfx_pfx=()
                 _sfx_user="${GX_USER:-}"
                 [[ -n "$_sfx_user" ]] && _sfx_pfx=(runuser -u "$_sfx_user" -- env "${GX_ENV[@]}")
-                if (( GX_DISPLAY_FOUND == -social
-                1 )); then
+                if (( GX_DISPLAY_FOUND == 1 )); then
                     if command -v mangohud &>/dev/null; then
                         log "$(t m09_gpu_pair_mangohud)"
                         if "${_sfx_pfx[@]}" mangohud "$gpu_stress_bin" "${gpu_stress_args[@]}" 2>/dev/null; then
