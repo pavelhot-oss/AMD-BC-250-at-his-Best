@@ -577,7 +577,7 @@ if [[ "$run_stability" =~ $yes_re ]]; then
                 # Le stress tourne dans la SESSION graphique du vrai
                 # utilisateur (pas root sans DISPLAY) : FurMark peut ouvrir
                 # son dépôt Vulkan/OpenGL et MangoHud sait le surligner.
-                _sfx_user _sfx_pfx=()
+                _sfx_user="" _sfx_pfx=()
                 _sfx_user="${GX_USER:-}"
                 [[ -n "$_sfx_user" ]] && _sfx_pfx=(runuser -u "$_sfx_user" -- env "${GX_ENV[@]}")
                 if (( GX_DISPLAY_FOUND == 1 )); then
